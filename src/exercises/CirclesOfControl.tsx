@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { IntroGrid, PrimaryButton, TextArea } from "./_shared";
+
+
 
 type Items = { control: string; influence: string; concern: string };
 
@@ -122,19 +125,11 @@ export default function CirclesOfControl() {
 
 function Intro() {
   return (
-    <div className="grid gap-6 md:grid-cols-3">
-      <InfoCard title="What">Separate your concerns into three groups: what you can <strong>control</strong>, what you can <strong>influence</strong>, and what is <strong>outside</strong> your control — so you focus energy on what's productive.</InfoCard>
-      <InfoCard title="Why">Stress is amplified when we focus on what we can't change. Letting go of the uncontrollable frees up energy for meaningful action.</InfoCard>
-      <InfoCard title="How"><ol className="list-decimal pl-4 space-y-1.5"><li>Name the problem.</li><li>Sort it into the three circles.</li><li>Plan action on what you can; release the rest.</li></ol></InfoCard>
-    </div>
+    <IntroGrid
+      what={<>Separate your concerns into three groups: what you can <strong>control</strong>, what you can <strong>influence</strong>, and what is <strong>outside</strong> your control — so you focus energy on what's productive.</>}
+      why="Stress is amplified when we focus on what we can't change. Letting go of the uncontrollable frees up energy for meaningful action."
+      how={<ol className="list-decimal pl-4 space-y-1.5"><li>Name the problem.</li><li>Sort it into the three circles.</li><li>Plan action on what you can; release the rest.</li></ol>}
+    />
   );
 }
 
-export function InfoCard({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <div className="rounded-xl border border-border bg-card p-6">
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">{title}</h3>
-      <div className="mt-3 text-sm leading-relaxed" dangerouslySetInnerHTML={typeof children === "string" ? { __html: children } : undefined}>{typeof children === "string" ? undefined : children}</div>
-    </div>
-  );
-}
