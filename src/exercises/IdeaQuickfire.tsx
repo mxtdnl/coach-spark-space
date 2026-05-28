@@ -96,7 +96,7 @@ export default function IdeaQuickfire() {
             </div>
           </div>
           <div className="flex gap-2">
-            <TextInput ref={inputRef} value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addIdea()} placeholder="Type an idea and hit Enter…" />
+            <input ref={inputRef} value={draft} onChange={(e) => setDraft(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addIdea()} placeholder="Type an idea and hit Enter…" className="w-full rounded-md border border-input bg-card px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-ring" />
             <PrimaryButton onClick={addIdea}>Add</PrimaryButton>
           </div>
           <div className="rounded-xl border border-border bg-card p-4">
