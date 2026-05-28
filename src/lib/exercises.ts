@@ -10,6 +10,16 @@ import BoxBreathing from "@/exercises/BoxBreathing";
 import CognitiveDistortions from "@/exercises/CognitiveDistortions";
 import ChallengingRules from "@/exercises/ChallengingRules";
 import ChimpBrain from "@/exercises/ChimpBrain";
+import FutureSelf from "@/exercises/FutureSelf";
+import CoreValues from "@/exercises/CoreValues";
+import EndOfYearReview from "@/exercises/EndOfYearReview";
+import FindingPassions from "@/exercises/FindingPassions";
+import Ikigai from "@/exercises/Ikigai";
+import ProcrastinationChecklist from "@/exercises/ProcrastinationChecklist";
+import WheelOfPower from "@/exercises/WheelOfPower";
+import WheelOfLife from "@/exercises/WheelOfLife";
+import SixThinkingHats from "@/exercises/SixThinkingHats";
+import IdeaQuickfire from "@/exercises/IdeaQuickfire";
 
 export type Exercise = {
   slug: string;
