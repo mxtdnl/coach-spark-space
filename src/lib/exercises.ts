@@ -10,6 +10,16 @@ import BoxBreathing from "@/exercises/BoxBreathing";
 import CognitiveDistortions from "@/exercises/CognitiveDistortions";
 import ChallengingRules from "@/exercises/ChallengingRules";
 import ChimpBrain from "@/exercises/ChimpBrain";
+import FutureSelf from "@/exercises/FutureSelf";
+import CoreValues from "@/exercises/CoreValues";
+import EndOfYearReview from "@/exercises/EndOfYearReview";
+import FindingPassions from "@/exercises/FindingPassions";
+import Ikigai from "@/exercises/Ikigai";
+import ProcrastinationChecklist from "@/exercises/ProcrastinationChecklist";
+import WheelOfPower from "@/exercises/WheelOfPower";
+import WheelOfLife from "@/exercises/WheelOfLife";
+import SixThinkingHats from "@/exercises/SixThinkingHats";
+import IdeaQuickfire from "@/exercises/IdeaQuickfire";
 
 export type Exercise = {
   slug: string;
@@ -120,6 +130,96 @@ export const EXERCISES: Exercise[] = [
     tags: ["emotional-regulation", "stress", "self-awareness"],
     estimatedMinutes: 10,
     component: ChimpBrain,
+  },
+  {
+    slug: "future-self",
+    title: "Meeting Your Future Self",
+    description: "A guided visualization to meet a wiser version of you 15 years from now — and hear what they have to say.",
+    category: "Purpose & Direction",
+    tags: ["visualization", "goals", "reflection"],
+    estimatedMinutes: 15,
+    component: FutureSelf,
+  },
+  {
+    slug: "core-values",
+    title: "Core Values",
+    description: "Clarify, group, and rank the values that guide your decisions and goals.",
+    category: "Purpose & Direction",
+    tags: ["values", "self-awareness", "decision-making"],
+    estimatedMinutes: 15,
+    component: CoreValues,
+  },
+  {
+    slug: "end-of-year-review",
+    title: "End-of-Year Review",
+    description: "Reflect on your academic year — what you achieved, what you'd change, and where to focus next.",
+    category: "Reflection",
+    tags: ["reflection", "review", "goals"],
+    estimatedMinutes: 15,
+    component: EndOfYearReview,
+  },
+  {
+    slug: "finding-your-passions",
+    title: "Finding Your Passions",
+    description: "Five questions to surface what energizes you and a small experiment to test it.",
+    category: "Purpose & Direction",
+    tags: ["passion", "self-awareness", "direction"],
+    estimatedMinutes: 15,
+    component: FindingPassions,
+  },
+  {
+    slug: "ikigai",
+    title: "Ikigai",
+    description: "Find your reason for being at the intersection of what you love, are good at, can be paid for, and what the world needs.",
+    category: "Purpose & Direction",
+    tags: ["purpose", "meaning", "career"],
+    estimatedMinutes: 20,
+    component: Ikigai,
+  },
+  {
+    slug: "procrastination-checklist",
+    title: "Procrastination Checklist",
+    description: "Pinpoint exactly where you procrastinate so you can stop labelling yourself and start fixing the specifics.",
+    category: "Productivity",
+    tags: ["procrastination", "self-awareness", "habits"],
+    estimatedMinutes: 10,
+    component: ProcrastinationChecklist,
+  },
+  {
+    slug: "wheel-of-power-and-privilege",
+    title: "Wheel of Privilege & Power",
+    description: "Reflect on how parts of your identity shape privilege or marginalization across different contexts.",
+    category: "Reflection",
+    tags: ["identity", "privilege", "awareness"],
+    estimatedMinutes: 15,
+    component: WheelOfPower,
+  },
+  {
+    slug: "wheel-of-life",
+    title: "Wheel of Life",
+    description: "A quick visual snapshot of your satisfaction across eight life areas — and where to bring more balance.",
+    category: "Wellbeing",
+    tags: ["balance", "reflection", "wellbeing"],
+    estimatedMinutes: 10,
+    component: WheelOfLife,
+  },
+  {
+    slug: "six-thinking-hats",
+    title: "The Six Thinking Hats",
+    description: "Work through a problem or decision from six distinct perspectives to reach a balanced choice.",
+    category: "Decision-Making",
+    tags: ["decision-making", "creativity", "problem-solving"],
+    estimatedMinutes: 20,
+    component: SixThinkingHats,
+  },
+  {
+    slug: "idea-generation-quickfire",
+    title: "Idea Generation Quickfire",
+    description: "A timed brainstorming sprint to flex your creative muscles — wild ideas welcome.",
+    category: "Creativity",
+    tags: ["brainstorming", "creativity", "ideas"],
+    estimatedMinutes: 10,
+    component: IdeaQuickfire,
   },
 ];
 
