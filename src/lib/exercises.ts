@@ -20,6 +20,15 @@ import WheelOfPower from "@/exercises/WheelOfPower";
 import WheelOfLife from "@/exercises/WheelOfLife";
 import SixThinkingHats from "@/exercises/SixThinkingHats";
 import IdeaQuickfire from "@/exercises/IdeaQuickfire";
+import ProjectBreakdown from "@/exercises/ProjectBreakdown";
+import RewardReplacement from "@/exercises/RewardReplacement";
+import SmartGoals from "@/exercises/SmartGoals";
+import UrgentImportant from "@/exercises/UrgentImportant";
+import DecisionGrid from "@/exercises/DecisionGrid";
+import AsIfExercise from "@/exercises/AsIfExercise";
+import WalkAndTalk from "@/exercises/WalkAndTalk";
+import HighStandards from "@/exercises/HighStandards";
+import PerfectionismInfo from "@/exercises/PerfectionismInfo";
 
 export type Exercise = {
   slug: string;
@@ -220,6 +229,87 @@ export const EXERCISES: Exercise[] = [
     tags: ["brainstorming", "creativity", "ideas"],
     estimatedMinutes: 10,
     component: IdeaQuickfire,
+  },
+  {
+    slug: "project-breakdown",
+    title: "Project Breakdown",
+    description: "Turn a daunting project into small, ordered tasks grouped by phase.",
+    category: "Productivity",
+    tags: ["planning", "procrastination", "projects"],
+    estimatedMinutes: 12,
+    component: ProjectBreakdown,
+  },
+  {
+    slug: "reward-replacement",
+    title: "Reward Replacement",
+    description: "Identify the hidden reward driving a habit, then design an alternative that delivers the same payoff at lower cost.",
+    category: "Habits & Behaviour",
+    tags: ["habits", "behaviour-change", "self-awareness"],
+    estimatedMinutes: 12,
+    component: RewardReplacement,
+  },
+  {
+    slug: "smart-goals",
+    title: "SMART Goals",
+    description: "Turn a vague goal into something Specific, Measurable, Achievable, Relevant, and Time-bound.",
+    category: "Purpose & Direction",
+    tags: ["goals", "planning", "motivation"],
+    estimatedMinutes: 12,
+    component: SmartGoals,
+  },
+  {
+    slug: "urgent-important-matrix",
+    title: "Urgent-Important Matrix",
+    description: "Sort tasks by urgency and importance (Eisenhower Matrix) so the urgent doesn't crowd out the important.",
+    category: "Prioritization",
+    tags: ["prioritization", "focus", "planning"],
+    estimatedMinutes: 10,
+    component: UrgentImportant,
+  },
+  {
+    slug: "decision-grid",
+    title: "Decision Grid",
+    description: "Weigh a tough decision by mapping the immediate and long-term benefits and costs of acting vs. staying the same.",
+    category: "Decision-Making",
+    tags: ["decision-making", "reflection", "trade-offs"],
+    estimatedMinutes: 15,
+    component: DecisionGrid,
+  },
+  {
+    slug: "as-if-exercise",
+    title: "'As If' Presentation Exercise",
+    description: "A Stanislavski-style theatre technique — deliver your text as if you were in a completely different scenario, and notice the shift.",
+    category: "Public Speaking",
+    tags: ["presenting", "confidence", "rehearsal"],
+    estimatedMinutes: 15,
+    component: AsIfExercise,
+  },
+  {
+    slug: "walk-and-talk",
+    title: "Walk and Talk",
+    description: "Rehearse a speech with movement tied to punctuation — sharper articulation, pacing, and recall.",
+    category: "Public Speaking",
+    tags: ["presenting", "rehearsal", "movement"],
+    estimatedMinutes: 12,
+    component: WalkAndTalk,
+  },
+  {
+    slug: "high-standards-check-in",
+    title: "High Standards Check-In",
+    description: "Audit the standards you hold across life areas — adjust the ones that are unrealistic or inflexible.",
+    category: "Beliefs & Thinking",
+    tags: ["perfectionism", "self-awareness", "balance"],
+    estimatedMinutes: 15,
+    component: HighStandards,
+  },
+  {
+    slug: "perfectionism-hub",
+    title: "Perfectionism: A Practical Guide",
+    description: "A hub of mindsets, busters, affirmations, and a personal script for working with perfectionism.",
+    category: "Beliefs & Thinking",
+    tags: ["perfectionism", "anxiety", "self-awareness"],
+    estimatedMinutes: 20,
+    component: PerfectionismInfo,
   },
 ];
 
