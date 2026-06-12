@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import { GhostButton, IntroGrid, PrimaryButton, TextInput } from "./_shared";
 
 type Option = "yes" | "no";
@@ -56,8 +56,8 @@ export default function DecisionGrid() {
         <div className="px-2">Benefits</div>
         <div className="px-2">Costs</div>
         {(["im", "lt"] as Time[]).map((time) => (
-          <>
-            <div key={`${time}-h`} className="self-center px-1 text-right">{time === "im" ? "Now" : "Long-term"}</div>
+          <Fragment key={time}>
+            <div className="self-center px-1 text-right">{time === "im" ? "Now" : "Long-term"}</div>
             {(["b", "c"] as Valence[]).map((val) => {
               const key = `${option}_${time}_${val}` as Zone;
               return (
@@ -73,7 +73,7 @@ export default function DecisionGrid() {
                 />
               );
             })}
-          </>
+          </Fragment>
         ))}
       </div>
     </div>
