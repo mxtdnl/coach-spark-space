@@ -338,13 +338,19 @@ export default function PrioritizationMatrix() {
                 <span className="w-8 h-8 grid place-items-center rounded-md bg-secondary font-mono text-sm font-semibold">
                   {r.letter}
                 </span>
-                <span className="flex-1 font-medium">{r.task}</span>
-                <span className="text-sm text-muted-foreground tabular-nums">
+                <div className="flex-1 min-w-0">
+                  <span className="font-medium block truncate">{r.task}</span>
+                  <div className="h-2 rounded-full bg-secondary overflow-hidden mt-1.5">
+                    <div className="h-full bg-primary" style={{ width: `${(r.score / Math.max(1, n - 1)) * 100}%` }} />
+                  </div>
+                </div>
+                <span className="text-sm text-muted-foreground tabular-nums shrink-0">
                   {r.score} {r.score === 1 ? "win" : "wins"}
                 </span>
               </li>
             ))}
           </ol>
+
 
           <div className="flex gap-2 flex-wrap">
             <button
