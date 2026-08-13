@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { IntroGrid, PrimaryButton, TextArea } from "./_shared";
+import { DraggableRadar } from "./WheelOfLife";
+
 
 const AREAS = [
   { key: "P", name: "Positive Emotions", prompt: "How often do you experience joy, gratitude, or contentment? What brings these into your life?" },
