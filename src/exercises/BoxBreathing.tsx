@@ -96,11 +96,18 @@ function BreathingBox({ phaseIdx, progress, running }: { phaseIdx: number; progr
   else if (phaseIdx === 2) { dx = pad + inner * (1 - p); dy = pad + inner; }
   else if (phaseIdx === 3) { dx = pad; dy = pad + inner * (1 - p); }
 
+  // The ball also swells on the inhale and shrinks on the exhale.
+  const base = 10;
+  const scale = phaseIdx === 0 ? 1 + p * 0.9 : phaseIdx === 1 ? 1.9 : phaseIdx === 2 ? 1.9 - p * 0.9 : 1;
+  const r = running ? base * scale : base;
+
   return (
     <svg viewBox={`0 0 ${size} ${size}`} className="w-64 h-64">
       <rect x={pad} y={pad} width={inner} height={inner} fill="none" stroke="hsl(var(--border))" strokeWidth={2} rx={12} />
       <rect x={pad} y={pad} width={inner} height={inner} fill="hsl(var(--primary))" fillOpacity={0.08} rx={12} />
-      <circle cx={dx} cy={dy} r={10} fill="hsl(var(--primary))" />
+      <circle cx={dx} cy={dy} r={r * 2.2} fill="hsl(var(--primary))" fillOpacity={0.12} />
+      <circle cx={dx} cy={dy} r={r} fill="hsl(var(--primary))" />
     </svg>
   );
 }
+
