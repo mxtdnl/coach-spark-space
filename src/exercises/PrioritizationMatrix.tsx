@@ -198,6 +198,28 @@ export default function PrioritizationMatrix() {
             />
           </div>
 
+          <div className="rounded-lg border border-border bg-card p-4">
+            <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Live standings</p>
+            <div className="mt-3 relative" style={{ height: ranking.length * 40 }}>
+              {ranking.map((r, pos) => (
+                <div
+                  key={r.idx}
+                  className="absolute left-0 right-0 flex items-center gap-3"
+                  style={{ transform: `translateY(${pos * 40}px)`, transition: "transform 320ms cubic-bezier(.2,.8,.3,1)" }}
+                >
+                  <span className="w-6 text-sm tabular-nums text-muted-foreground">{pos + 1}</span>
+                  <span className="w-6 h-6 grid place-items-center rounded bg-secondary font-mono text-xs font-semibold shrink-0">{r.letter}</span>
+                  <span className="text-sm truncate w-40 md:w-64">{r.task}</span>
+                  <div className="flex-1 h-2 rounded-full bg-secondary overflow-hidden">
+                    <div className="h-full bg-primary transition-all duration-300" style={{ width: `${(r.score / Math.max(1, n - 1)) * 100}%` }} />
+                  </div>
+                  <span className="w-6 text-sm tabular-nums text-right">{r.score}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+
           <div className="overflow-x-auto rounded-lg border border-border bg-card">
             <table className="min-w-full border-collapse text-sm">
               <thead>
@@ -316,13 +338,19 @@ export default function PrioritizationMatrix() {
                 <span className="w-8 h-8 grid place-items-center rounded-md bg-secondary font-mono text-sm font-semibold">
                   {r.letter}
                 </span>
-                <span className="flex-1 font-medium">{r.task}</span>
-                <span className="text-sm text-muted-foreground tabular-nums">
+                <div className="flex-1 min-w-0">
+                  <span className="font-medium block truncate">{r.task}</span>
+                  <div className="h-2 rounded-full bg-secondary overflow-hidden mt-1.5">
+                    <div className="h-full bg-primary" style={{ width: `${(r.score / Math.max(1, n - 1)) * 100}%` }} />
+                  </div>
+                </div>
+                <span className="text-sm text-muted-foreground tabular-nums shrink-0">
                   {r.score} {r.score === 1 ? "win" : "wins"}
                 </span>
               </li>
             ))}
           </ol>
+
 
           <div className="flex gap-2 flex-wrap">
             <button

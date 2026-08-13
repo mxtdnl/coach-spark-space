@@ -29,6 +29,10 @@ import AsIfExercise from "@/exercises/AsIfExercise";
 import WalkAndTalk from "@/exercises/WalkAndTalk";
 import HighStandards from "@/exercises/HighStandards";
 import PerfectionismInfo from "@/exercises/PerfectionismInfo";
+import EthicalDilemmas from "@/exercises/EthicalDilemmas";
+import BearFeedback from "@/exercises/BearFeedback";
+import TeamAlignment from "@/exercises/TeamAlignment";
+
 
 export type Exercise = {
   slug: string;
@@ -311,7 +315,36 @@ export const EXERCISES: Exercise[] = [
     estimatedMinutes: 20,
     component: PerfectionismInfo,
   },
+  {
+
+    slug: "ethical-dilemmas",
+    title: "Ethical Dilemmas",
+    description: "Work a hard choice from gut instinct to reasoned decision — consequences, values, and stakeholders.",
+    category: "Decision-Making",
+    tags: ["ethics", "values", "decision-making"],
+    estimatedMinutes: 15,
+    component: EthicalDilemmas,
+  },
+  {
+    slug: "bear-feedback-model",
+    title: "BEAR Feedback Model",
+    description: "Build clear, non-confrontational feedback one step at a time: Behavior, Effect, Alternative, Result.",
+    category: "Communication",
+    tags: ["feedback", "teamwork", "communication"],
+    estimatedMinutes: 12,
+    component: BearFeedback,
+  },
+  {
+    slug: "team-alignment",
+    title: "Team Alignment Session",
+    description: "A 45-minute guided session for a team to align on goals, roles, meeting rhythm, and expectations.",
+    category: "Teamwork",
+    tags: ["teamwork", "goals", "alignment"],
+    estimatedMinutes: 45,
+    component: TeamAlignment,
+  },
 ];
+
 
 export const getExercise = (slug: string) =>
   EXERCISES.find((e) => e.slug === slug);

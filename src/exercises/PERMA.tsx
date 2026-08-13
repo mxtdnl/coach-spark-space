@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { IntroGrid, PrimaryButton, TextArea } from "./_shared";
+import { DraggableRadar } from "./WheelOfLife";
+
 
 const AREAS = [
   { key: "P", name: "Positive Emotions", prompt: "How often do you experience joy, gratitude, or contentment? What brings these into your life?" },
@@ -37,8 +39,15 @@ export default function PERMA() {
       {step === "reflect" && (
         <section className="space-y-6">
           <div>
-            <h2 className="text-2xl font-semibold tracking-tight">Reflect on each area</h2>
-            <p className="text-sm text-muted-foreground mt-1">Rate yourself 1–10 and jot down what comes to mind.</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Shape your PERMA profile</h2>
+            <p className="text-sm text-muted-foreground mt-1">Drag each dot along its spoke — outward is thriving (10), inward is depleted (1). The shape morphs as you drag.</p>
+          </div>
+          <div className="rounded-xl border border-border bg-card p-4 md:p-6 flex justify-center">
+            <DraggableRadar
+              categories={AREAS.map((a) => a.name)}
+              scores={Object.fromEntries(AREAS.map((a) => [a.name, data[a.key].score]))}
+              setScores={(s) => setData((d) => Object.fromEntries(AREAS.map((a) => [a.key, { ...d[a.key], score: s[a.name] }])) as Record<string, Entry>)}
+            />
           </div>
           <div className="space-y-4">
             {AREAS.map((a) => (
@@ -49,11 +58,11 @@ export default function PERMA() {
                   <span className="ml-auto text-2xl font-semibold tabular-nums">{data[a.key].score}</span>
                 </div>
                 <p className="text-sm text-muted-foreground mt-2">{a.prompt}</p>
-                <input type="range" min={1} max={10} value={data[a.key].score} onChange={(e) => update(a.key, { score: Number(e.target.value) })} className="w-full mt-3 accent-[hsl(var(--primary))]" />
                 <TextArea rows={2} value={data[a.key].notes} onChange={(e) => update(a.key, { notes: e.target.value })} placeholder="Notes…" className="mt-2" />
               </div>
             ))}
           </div>
+
           <div className="flex justify-end">
             <PrimaryButton onClick={() => setStep("summary")}>See summary →</PrimaryButton>
           </div>
