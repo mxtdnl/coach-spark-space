@@ -314,7 +314,9 @@ export const EXERCISES: Exercise[] = [
     tags: ["perfectionism", "anxiety", "self-awareness"],
     estimatedMinutes: 20,
     component: PerfectionismInfo,
+  },
   {
+
     slug: "ethical-dilemmas",
     title: "Ethical Dilemmas",
     description: "Work a hard choice from gut instinct to reasoned decision — consequences, values, and stakeholders.",
