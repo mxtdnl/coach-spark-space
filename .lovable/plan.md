@@ -1,50 +1,53 @@
-## Goal
+# Three new library entries + next Brilliant-style redesigns
 
-Turn the current single-exercise app into a **library of interactive coaching exercises**. You send me PDFs, I hand-build each one as a bespoke interactive page, and they all live together under one browsable site with categories and tags.
+## Part 1 — New exercises from the uploads
 
-## What you'll see
+### 1. Ethical Dilemmas (`/exercise/ethical-dilemmas`)
+Category: Decision-Making. ~15 min.
 
-**1. Library home (`/`)**
-- Header with the library name + short intro
-- Search box (filters by title/description)
-- Category filter chips (e.g. Prioritization, Reflection, Goal-setting, Decision-making — we'll grow this list as exercises arrive)
-- Grid of exercise cards, each showing: title, short description, category, tags, estimated time, and a "Start" button
+Interactive card-deck flow rather than a static scenario list:
+- Intro (What / Why / How) in the standard three-card grid.
+- Pick a dilemma from six cards (Trolley Problem, Lifeboat, Friend's Secret, Inflated Results, Faulty Product, Unethical Supplier), split into Classical and Business tabs.
+- Gut check: a two-option snap choice plus a short "why" box, captured before any analysis so the student can compare it to their final answer.
+- Weigh it up: short-term vs long-term consequences for each option, a value-tag picker (fairness, honesty, loyalty, results, care, integrity...), and a stakeholder list where each stakeholder gets a "how would they see it?" line.
+- Decide: final choice, reasoning, and a side-by-side "your gut said X / you chose Y" reveal.
+- Summary with print/save.
 
-**2. Exercise page (`/exercise/[slug]`)**
-- Bespoke interactive flow tailored to that PDF (like the current Prioritization Matrix)
-- "Back to library" link in the header
-- Print / save options where appropriate
+### 2. BEAR Feedback Model (`/exercise/bear-feedback-model`)
+Category: Communication (new category). ~12 min.
 
-**3. Existing Prioritization Matrix**
-- Moves to `/exercise/prioritization-matrix` unchanged
-- Becomes the first card in the library
+- Intro grid, then a worked example carousel (the two examples from the PDF) so students see the model before writing.
+- Guided four-step builder: Behavior → Effect → Alternative → Result, one step at a time with the step's guidance and a live-assembling feedback script panel that fills in as they type.
+- Light self-check prompts on the Behavior step (facts only, no judgement) as toggles the student ticks.
+- Summary shows the full feedback message as one readable paragraph they can copy or print.
 
-## How new PDFs get added
+### 3. Team Alignment Session (`/exercise/team-alignment`)
+Category: Teamwork (new category). ~45 min.
 
-Workflow per PDF you send:
-1. You upload the PDF in chat (one or several at a time is fine)
-2. I parse it, design the interactive flow, and confirm with you if anything's ambiguous
-3. I build it as its own route + component, register it in the exercise catalogue, and tag/categorise it
-4. It appears in the library immediately
+The source doc is a facilitator script, so it becomes a session companion a team fills in together:
+- Intro explains the 45-minute structure and ground rules (solution-focused, respectful, everyone present).
+- Session goal picker: the team chooses what today is for (alignment, strengths, goal setting, conflict, roles).
+- Goals & expectations round: each question from the doc is asked in turn, with per-member answer rows (add team members by name) — importance of an A (1–5 slider), confident/weakest subject, individual goal, desired team role, meetings per week, submission timing vs deadline.
+- Shared view that surfaces common themes: averages for the numeric questions and grouped answers so gaps are visible.
+- Closing: one key takeaway and one commitment per member.
+- Team-working checklist to tick before finishing, plus print/save for the whole session record.
 
-Because the PDFs are varied (worksheets, canvases, reflection prompts, scoring tools, etc.), each one gets a hand-built UI rather than a one-size-fits-all template — this keeps the quality high, the way the Prioritization Matrix turned out.
+All three are registered in `src/lib/exercises.ts` with slug, title, description, category, tags, minutes, and use the shared `_shared.tsx` primitives so styling matches the library.
 
-## Saving answers
+## Part 2 — Continuing the Brilliant.org direction
 
-Session-only, as you chose — answers live while the tab is open and reset on close. No accounts, no backend needed. We can revisit this later if you want students to come back to in-progress work.
+Redesigning the four candidates flagged earlier, only where direct manipulation genuinely adds something:
 
-## Technical section
+- **Six Thinking Hats** — replace the pill row with a tactile hat carousel: a large coloured hat "worn" one at a time, coloured backdrop shifting with the hat, progress ring showing which hats are done, and a final board where all six perspectives sit side by side before the decision.
+- **PERMA** — draggable dots on five radar spokes with a live-morphing polygon, matching the Wheel of Life / Self-Care Wheel treatment.
+- **Box Breathing** — an animated ball tracing the four sides of a square in time with the 4-4-4-4 count, replacing the plain countdown, with cycle count and a calm/steady phase label.
+- **Prioritization Matrix** — keep the pairwise engine, add a tournament-style live standings visual that reorders as comparisons are made, plus a final ranked bar chart.
 
-- **Catalogue**: a single `src/lib/exercises.ts` registry — each entry has `slug`, `title`, `description`, `category`, `tags`, `estimatedMinutes`, and a lazy-loaded component reference. Adding an exercise = adding one entry + one route file.
-- **Routes**: `src/routes/index.tsx` becomes the library landing page; exercises move to `src/routes/exercise.$slug.tsx` (or one file per exercise under `src/routes/exercise/`) — each with its own SEO `head()`.
-- **Filtering**: category + search state stored in URL search params so links are shareable.
-- **Styling**: reuse the existing design tokens in `src/styles.css` so every exercise feels part of the same product.
-- **No backend**: nothing requires Lovable Cloud at this stage.
+Not redesigning: the journaling-led exercises (Thought Logging, Future Self, End-of-Year Review, Finding Passions, Self-Compassion, Chimp Brain, Rules & Assumptions, Challenging Rules, Reward Replacement, SMART Goals, As-If, Walk and Talk, High Standards, Perfectionism Hub, Project Breakdown, Idea Quickfire) — writing is the exercise there.
 
-## What I need from you to start
+## Technical notes
 
-1. A **name** for the library (e.g. "Coach Spark", "[Your Name]'s Coaching Toolkit") — or I'll suggest a few.
-2. The **PDFs** themselves — send whenever ready, in any order. I'll digitise them one at a time (or in small batches) and they'll appear on the home page as I go.
-3. An initial **category list** if you have one in mind, otherwise I'll propose categories based on the first batch of PDFs.
-
-Approve this plan and I'll set up the library shell (home page + routing + catalogue) with the Prioritization Matrix as the first entry, ready for you to start sending more PDFs.
+- New files under `src/exercises/`, each a default-exported step-machine component using `useState`, following the existing pattern.
+- Drag interactions reuse the pointer-event approach already used in Wheel of Life and Urgent/Important, with click/tap fallbacks for touch.
+- Two new categories (Communication, Teamwork) appear automatically in the home-page filter, which derives categories from the catalogue.
+- No backend; state stays local to the session, with print/save as the export path, consistent with the rest of the library.
