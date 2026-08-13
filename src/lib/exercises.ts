@@ -29,6 +29,10 @@ import AsIfExercise from "@/exercises/AsIfExercise";
 import WalkAndTalk from "@/exercises/WalkAndTalk";
 import HighStandards from "@/exercises/HighStandards";
 import PerfectionismInfo from "@/exercises/PerfectionismInfo";
+import EthicalDilemmas from "@/exercises/EthicalDilemmas";
+import BearFeedback from "@/exercises/BearFeedback";
+import TeamAlignment from "@/exercises/TeamAlignment";
+
 
 export type Exercise = {
   slug: string;
