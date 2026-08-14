@@ -32,6 +32,9 @@ import PerfectionismInfo from "@/exercises/PerfectionismInfo";
 import EthicalDilemmas from "@/exercises/EthicalDilemmas";
 import BearFeedback from "@/exercises/BearFeedback";
 import TeamAlignment from "@/exercises/TeamAlignment";
+import MustShouldCould from "@/exercises/MustShouldCould";
+import EnhancedTodo from "@/exercises/EnhancedTodo";
+import ActioningObjectives from "@/exercises/ActioningObjectives";
 
 
 export type Exercise = {
