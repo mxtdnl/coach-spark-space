@@ -32,6 +32,9 @@ import PerfectionismInfo from "@/exercises/PerfectionismInfo";
 import EthicalDilemmas from "@/exercises/EthicalDilemmas";
 import BearFeedback from "@/exercises/BearFeedback";
 import TeamAlignment from "@/exercises/TeamAlignment";
+import MustShouldCould from "@/exercises/MustShouldCould";
+import EnhancedTodo from "@/exercises/EnhancedTodo";
+import ActioningObjectives from "@/exercises/ActioningObjectives";
 
 
 export type Exercise = {
@@ -342,6 +345,33 @@ export const EXERCISES: Exercise[] = [
     tags: ["teamwork", "goals", "alignment"],
     estimatedMinutes: 45,
     component: TeamAlignment,
+  },
+  {
+    slug: "must-should-could",
+    title: "Must Do, Should Do, Could Do",
+    description: "Sort everything on your plate into three levels of importance in 10 minutes flat.",
+    category: "Prioritization",
+    tags: ["prioritization", "planning", "focus"],
+    estimatedMinutes: 10,
+    component: MustShouldCould,
+  },
+  {
+    slug: "enhanced-to-do-list",
+    title: "Enhanced To-Do List",
+    description: "A to-do list with priorities and time estimates — then compare estimated vs. actual time.",
+    category: "Productivity",
+    tags: ["planning", "time-management", "productivity"],
+    estimatedMinutes: 12,
+    component: EnhancedTodo,
+  },
+  {
+    slug: "actioning-and-objectives",
+    title: "Actioning and Objectives",
+    description: "An acting technique for presentations: give every section an objective and every point an action verb.",
+    category: "Public Speaking",
+    tags: ["presenting", "rehearsal", "delivery"],
+    estimatedMinutes: 20,
+    component: ActioningObjectives,
   },
 ];
 
