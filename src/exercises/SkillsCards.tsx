@@ -226,7 +226,7 @@ const CARDS: Card[] = [
     ],
     activities: [
       { name: "Core Values Exercise", slug: "core-values" },
-      { name: "Wheel of Privilege and Power", slug: "wheel-of-privilege-and-power" },
+      { name: "Wheel of Privilege and Power", slug: "wheel-of-power-and-privilege" },
       { name: "Ethical Dilemmas", slug: "ethical-dilemmas" },
     ],
   },
