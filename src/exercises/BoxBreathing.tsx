@@ -15,54 +15,64 @@ export default function BoxBreathing() {
   const [cycle, setCycle] = useState(0);
   const [phaseIdx, setPhaseIdx] = useState(0);
   const [tick, setTick] = useState(secondsPerPhase);
-  const intervalRef = useRef<number | null>(null);
+
+  // Authoritative timer state lives in a ref to avoid races and skipped phases.
+  const timer = useRef({ cycle: 0, phaseIdx: 0, tick: secondsPerPhase });
 
   useEffect(() => {
-    if (!running) {
-      setTick(secondsPerPhase);
-      return;
-    }
+    if (!running) return;
 
-    intervalRef.current = window.setInterval(() => {
-      setTick((t) => {
-        if (t > 1) return t - 1;
-
-        // End of this phase: move to next phase and reset the tick.
-        setPhaseIdx((p) => {
-          const next = (p + 1) % 4;
-          if (next === 0) {
-            setCycle((c) => {
-              const nextCycle = c + 1;
-              if (nextCycle >= totalCycles) {
-                setRunning(false);
-                return 0;
-              }
-              return nextCycle;
-            });
-          }
-          return next;
-        });
-        return secondsPerPhase;
-      });
-    }, 1000);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [running, secondsPerPhase, totalCycles]);
-
-  const start = () => {
+    // Reset authoritative state when starting.
+    timer.current = { cycle: 0, phaseIdx: 0, tick: secondsPerPhase };
     setCycle(0);
     setPhaseIdx(0);
     setTick(secondsPerPhase);
+
+    const interval = window.setInterval(() => {
+      const state = timer.current;
+
+      if (state.tick > 1) {
+        state.tick -= 1;
+      } else {
+        // End of phase: advance to next phase.
+        state.phaseIdx = (state.phaseIdx + 1) % 4;
+
+        if (state.phaseIdx === 0) {
+          // Completed a full box-breathing cycle.
+          state.cycle += 1;
+          if (state.cycle >= totalCycles) {
+            setRunning(false);
+            return;
+          }
+        }
+
+        state.tick = secondsPerPhase;
+      }
+
+      // Push the ref state to React for rendering.
+      setCycle(state.cycle);
+      setPhaseIdx(state.phaseIdx);
+      setTick(state.tick);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [running, secondsPerPhase, totalCycles]);
+
+  // Keep the timer in sync if the user changes duration while paused.
+  useEffect(() => {
+    if (!running) {
+      timer.current.tick = secondsPerPhase;
+      setTick(secondsPerPhase);
+    }
+  }, [secondsPerPhase, running]);
+
+  const start = () => {
     setRunning(true);
   };
 
   const stop = () => {
     setRunning(false);
+    timer.current = { cycle: 0, phaseIdx: 0, tick: secondsPerPhase };
     setCycle(0);
     setPhaseIdx(0);
     setTick(secondsPerPhase);
