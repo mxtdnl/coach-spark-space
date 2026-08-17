@@ -16,7 +16,7 @@ export const Route = createFileRoute("/exercise/$slug")({
     };
   },
   head: ({ loaderData }) => {
-    const e = loaderData?.exercise;
+    const e = loaderData;
     if (!e) return { meta: [{ title: "Exercise not found" }] };
     return {
       meta: [
@@ -55,7 +55,9 @@ export const Route = createFileRoute("/exercise/$slug")({
 });
 
 function ExercisePage() {
-  const { exercise } = Route.useLoaderData();
+  const meta = Route.useLoaderData();
+  const exercise = getExercise(meta.slug);
+  if (!exercise) throw notFound();
   const Component = exercise.component;
 
   return (
