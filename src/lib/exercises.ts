@@ -35,6 +35,7 @@ import TeamAlignment from "@/exercises/TeamAlignment";
 import MustShouldCould from "@/exercises/MustShouldCould";
 import EnhancedTodo from "@/exercises/EnhancedTodo";
 import ActioningObjectives from "@/exercises/ActioningObjectives";
+import SkillsCards from "@/exercises/SkillsCards";
 
 
 export type Exercise = {
@@ -48,6 +49,15 @@ export type Exercise = {
 };
 
 export const EXERCISES: Exercise[] = [
+  {
+    slug: "skills-and-mindset-cards",
+    title: "Skills & Mindset Cards",
+    description: "Spread twelve skill and mindset cards, pick your top three and three to develop, then work one card in depth.",
+    category: "Self-Awareness",
+    tags: ["strengths", "reflection", "development"],
+    estimatedMinutes: 30,
+    component: SkillsCards,
+  },
   {
     slug: "prioritization-matrix",
     title: "Prioritization Matrix",
