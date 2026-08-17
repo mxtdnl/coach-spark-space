@@ -5,10 +5,18 @@ export const Route = createFileRoute("/exercise/$slug")({
   loader: ({ params }) => {
     const exercise = getExercise(params.slug);
     if (!exercise) throw notFound();
-    return { exercise };
+    // Return only serializable metadata; the component is resolved client-side.
+    return {
+      slug: exercise.slug,
+      title: exercise.title,
+      description: exercise.description,
+      category: exercise.category,
+      tags: exercise.tags,
+      estimatedMinutes: exercise.estimatedMinutes,
+    };
   },
   head: ({ loaderData }) => {
-    const e = loaderData?.exercise;
+    const e = loaderData;
     if (!e) return { meta: [{ title: "Exercise not found" }] };
     return {
       meta: [
@@ -47,7 +55,9 @@ export const Route = createFileRoute("/exercise/$slug")({
 });
 
 function ExercisePage() {
-  const { exercise } = Route.useLoaderData();
+  const meta = Route.useLoaderData();
+  const exercise = getExercise(meta.slug);
+  if (!exercise) throw notFound();
   const Component = exercise.component;
 
   return (
