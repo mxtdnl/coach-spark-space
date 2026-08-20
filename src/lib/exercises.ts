@@ -18,6 +18,7 @@ import Ikigai from "@/exercises/Ikigai";
 import ProcrastinationChecklist from "@/exercises/ProcrastinationChecklist";
 import WheelOfPower from "@/exercises/WheelOfPower";
 import WheelOfLife from "@/exercises/WheelOfLife";
+import WheelOfHult from "@/exercises/WheelOfHult";
 import SixThinkingHats from "@/exercises/SixThinkingHats";
 import IdeaQuickfire from "@/exercises/IdeaQuickfire";
 import ProjectBreakdown from "@/exercises/ProjectBreakdown";
@@ -382,6 +383,16 @@ export const EXERCISES: Exercise[] = [
     tags: ["presenting", "rehearsal", "delivery"],
     estimatedMinutes: 20,
     component: ActioningObjectives,
+  },
+  {
+    slug: "wheel-of-hult",
+    title: "Wheel of Hult",
+    description:
+      "Rate eight areas of student life, then spend a limited pot of 35 focus points across them to decide what gets your attention next month.",
+    category: "Student Life",
+    tags: ["balance", "priorities", "focus", "trade-offs", "student-life"],
+    estimatedMinutes: 20,
+    component: WheelOfHult,
   },
 ];
 
