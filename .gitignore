@@ -30,3 +30,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# npm lockfile — the repo's lockfile is bun.lock; the Pages workflow runs npm install,
+# not npm ci, so a local npm install must not leave a tracked lockfile behind.
+package-lock.json
