@@ -65,9 +65,20 @@ cd sdc-virtual-resource-library
 npm install
 npm run dev        # dev server
 npm run build      # production build
+npm test           # the full test suite
+npm run test:watch # re-run affected tests while editing
+npm run typecheck  # tsc --noEmit
+npm run verify     # typecheck + tests (what CI gates on)
 npm run lint       # eslint
 npm run format     # prettier
 ```
+
+### Testing
+
+Every feature is covered by a Vitest + Testing Library suite that runs on every build, and
+the GitHub Pages deploy publishes nothing unless it passes. The per-exercise contract test
+covers each exercise automatically from the catalogue, so a new exercise is tested the
+moment it is registered. See [`TESTING.md`](./TESTING.md).
 
 ### Stack
 
@@ -95,7 +106,8 @@ It's a two-file change — no route, no config:
 2. Append an entry to `EXERCISES` in `src/lib/exercises.ts` (slug, title, description,
    category, tags, estimated minutes, component).
 
-Categories, filters, search, routing, and page metadata all derive from the catalogue.
+Categories, filters, search, routing, page metadata — and the test suite — all derive from
+the catalogue: registering the exercise is what puts it under test.
 Use `usePersistentState(slug, field, initial)` from `@/lib/exercise-storage` in place of
 `useState` for anything the student types or chooses — keep transient UI state (drag targets,
 timers, hover) on plain `useState`.

@@ -2,7 +2,12 @@ import { createStart, createMiddleware } from "@tanstack/react-start";
 
 import { renderErrorPage } from "./lib/error-page";
 
-const errorMiddleware = createMiddleware().server(async ({ next }) => {
+/**
+ * Turns an unhandled server error into the standalone HTML error page.
+ * Exported so it can be exercised directly in tests; the app wires it up
+ * through `startInstance` below.
+ */
+export const errorMiddleware = createMiddleware().server(async ({ next }) => {
   try {
     return await next();
   } catch (error) {

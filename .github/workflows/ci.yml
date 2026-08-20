@@ -1,0 +1,64 @@
+name: CI
+
+# The test suite runs on every build: every push to any branch and every pull
+# request. The Pages deploy (deploy-pages.yml) waits for this workflow to pass
+# before it publishes anything.
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_call:
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Typecheck, test and build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # No lockfile is committed, so `npm install` rather than `npm ci`. The
+      # public registry is set explicitly because bunfig.toml points bun at
+      # Lovable's private cache, which is unreachable from Actions.
+      - name: Install dependencies
+        run: npm install --registry=https://registry.npmjs.org --no-audit --no-fund
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm run test -- --reporter=default --reporter=junit --outputFile=test-report.junit.xml
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: test-report.junit.xml
+          if-no-files-found: warn
+
+      - name: Build
+        run: npm run build
+
+  lint:
+    name: Lint (advisory)
+    runs-on: ubuntu-latest
+    # The repository is not yet Prettier-clean, so lint reports rather than
+    # blocks. Drop continue-on-error once `npm run format` has been run over
+    # the existing source.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --registry=https://registry.npmjs.org --no-audit --no-fund
+      - run: npm run lint

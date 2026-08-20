@@ -35,13 +35,21 @@ export function GhostButton({ children, ...props }: React.ButtonHTMLAttributes<H
   );
 }
 
+/**
+ * Label + optional hint above a control.
+ *
+ * The control is nested inside the <label> so the two are implicitly
+ * associated: screen readers announce the label with the field, and clicking
+ * the label focuses it. A sibling <label> with no `for` looks identical but
+ * announces nothing.
+ */
 export function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
   return (
-    <div>
-      <label className="text-sm font-medium">{label}</label>
-      {hint && <p className="text-xs text-muted-foreground mt-0.5">{hint}</p>}
+    <label className="block">
+      <span className="block text-sm font-medium">{label}</span>
+      {hint && <span className="block text-xs text-muted-foreground mt-0.5">{hint}</span>}
       <div className="mt-2">{children}</div>
-    </div>
+    </label>
   );
 }
 
