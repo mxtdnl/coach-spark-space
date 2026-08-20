@@ -72,18 +72,28 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Prioritisation Matrix" },
-      { name: "description", content: "An interactive online tool for students to complete coaching exercises digitally." },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Prioritisation Matrix" },
-      { property: "og:description", content: "An interactive online tool for students to complete coaching exercises digitally." },
+      // Defaults for any route that doesn't set its own head; individual routes
+      // (e.g. /exercise/$slug) override title and description.
+      { title: "Coaching Exercise Library" },
+      {
+        name: "description",
+        content:
+          "Interactive versions of coaching worksheets — work through an exercise online instead of printing it.",
+      },
+      { property: "og:title", content: "Coaching Exercise Library" },
+      {
+        property: "og:description",
+        content:
+          "Interactive versions of coaching worksheets — work through an exercise online instead of printing it.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
-      { name: "twitter:title", content: "Prioritisation Matrix" },
-      { name: "twitter:description", content: "An interactive online tool for students to complete coaching exercises digitally." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/de54e9e7-1d3b-4191-b70e-e4411dcaefb0/id-preview-fa781732--4951fccf-ea14-447e-a1ae-d8802f359c80.lovable.app-1779895521432.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/de54e9e7-1d3b-4191-b70e-e4411dcaefb0/id-preview-fa781732--4951fccf-ea14-447e-a1ae-d8802f359c80.lovable.app-1779895521432.png" },
+      { name: "twitter:title", content: "Coaching Exercise Library" },
+      {
+        name: "twitter:description",
+        content:
+          "Interactive versions of coaching worksheets — work through an exercise online instead of printing it.",
+      },
     ],
     links: [
       {

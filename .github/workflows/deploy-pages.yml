@@ -1,0 +1,58 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Let a running deploy finish; queue at most one more.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # No lockfile is committed, so `npm install` rather than `npm ci`.
+      # The public registry is set explicitly because bunfig.toml points bun at
+      # Lovable's private cache, which is unreachable from Actions.
+      - name: Install dependencies
+        run: npm install --registry=https://registry.npmjs.org --no-audit --no-fund
+
+      - name: Build static site
+        env:
+          PAGES_BASE: /${{ github.event.repository.name }}/
+        run: npx vite build --config vite.config.pages.ts
+
+      - name: Add Pages fallbacks
+        run: |
+          # Stop GitHub from running the output through Jekyll.
+          touch dist/client/.nojekyll
+          # Serve the app shell for any URL that wasn't prerendered.
+          cp dist/client/index.html dist/client/404.html
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist/client
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
