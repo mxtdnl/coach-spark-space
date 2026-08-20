@@ -232,6 +232,7 @@ export default function WheelOfHult() {
               setScores={setScores}
               categories={AREA_KEYS}
               labels={labels}
+              ariaLabel="Satisfaction wheel — drag each spoke to rate that area"
             />
           </div>
 
@@ -272,6 +273,12 @@ export default function WheelOfHult() {
               every area. No area can take more than {MAX_PER_AREA}. To give more somewhere, take it
               from somewhere else.
             </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              The wheel starts empty. Click a spoke where you want its points to sit — a marker
+              appears there and can then be dragged. Click further out than your remaining budget
+              allows and it lands on the most you can still afford. Drag a marker back to the centre
+              to return those points to the pool.
+            </p>
           </div>
 
           <BudgetBar spent={spent} />
@@ -285,6 +292,9 @@ export default function WheelOfHult() {
               min={0}
               color="var(--chart-1)"
               clampValue={(i, v) => Math.min(v, ceilingFor(AREA_KEYS[i]))}
+              setOnPress
+              hideZeroHandles
+              ariaLabel="Resource allocation wheel — click a spoke to place points on that area"
             />
           </div>
 
@@ -614,6 +624,7 @@ function WheelPair({
             categories={AREA_KEYS}
             labels={labels}
             readOnly
+            ariaLabel="Satisfaction now"
           />
         </div>
       </div>
@@ -629,6 +640,8 @@ function WheelPair({
             labels={labels}
             readOnly
             color="var(--chart-1)"
+            hideZeroHandles
+            ariaLabel="Points allocated for next month"
           />
         </div>
       </div>
@@ -659,6 +672,8 @@ function OverlayWheel({
           readOnly
           color="var(--chart-1)"
           overlay={{ scores, color: "var(--primary)" }}
+          hideZeroHandles
+          ariaLabel="Points next month, overlaid on satisfaction now"
         />
       </div>
       <p className="text-xs text-muted-foreground">Each spoke is labelled points · satisfaction.</p>

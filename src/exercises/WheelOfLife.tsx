@@ -107,6 +107,9 @@ export function DraggableRadar({
   overlay,
   clampValue,
   showValues = true,
+  setOnPress = false,
+  hideZeroHandles = false,
+  ariaLabel = "Interactive wheel of life",
 }: {
   scores: Record<string, number>;
   setScores: (s: Record<string, number>) => void;
@@ -123,6 +126,11 @@ export function DraggableRadar({
   /** Final say on a dragged value — used to enforce a shared budget. */
   clampValue?: (index: number, value: number) => number;
   showValues?: boolean;
+  /** Place a value on press rather than waiting for movement, so a click alone sets a spoke. */
+  setOnPress?: boolean;
+  /** Draw no handle for a spoke sitting at 0 — an unallocated spoke, not a spoke rated zero. */
+  hideZeroHandles?: boolean;
+  ariaLabel?: string;
 }) {
   const size = 460;
   const cx = size / 2;
@@ -175,7 +183,7 @@ export function DraggableRadar({
       viewBox={`0 0 ${size} ${size}`}
       className="w-full max-w-[480px] touch-none select-none"
       role="img"
-      aria-label="Interactive wheel of life"
+      aria-label={ariaLabel}
     >
       {[2, 4, 6, 8, 10].map((g) => (
         <polygon
@@ -189,7 +197,19 @@ export function DraggableRadar({
       ))}
       {categories.map((_, i) => {
         const [x, y] = point(i, 10);
-        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="var(--border)" strokeWidth={1} />;
+        const lit = !readOnly && (hover === i || dragIdx === i);
+        return (
+          <line
+            key={i}
+            x1={cx}
+            y1={cy}
+            x2={x}
+            y2={y}
+            stroke={lit ? color : "var(--border)"}
+            strokeWidth={lit ? 2 : 1}
+            strokeOpacity={lit ? 0.5 : 1}
+          />
+        );
       })}
       {overlay && (
         <polygon
@@ -228,6 +248,7 @@ export function DraggableRadar({
               onPointerDown={(e) => {
                 (e.target as Element).setPointerCapture(e.pointerId);
                 setDragIdx(i);
+                if (setOnPress) setFromPointer(i, e.clientX, e.clientY);
               }}
               onPointerEnter={() => setHover(i)}
               onPointerLeave={() => setHover(null)}
@@ -237,6 +258,7 @@ export function DraggableRadar({
       {categories.map((c, i) => {
         const [x, y] = point(i, scores[c]);
         const isActive = dragIdx === i || hover === i;
+        if (hideZeroHandles && (scores[c] ?? 0) <= 0 && dragIdx !== i) return null;
         return (
           <g key={c}>
             <circle
