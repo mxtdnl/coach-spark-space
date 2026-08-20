@@ -78,16 +78,51 @@ export default function WheelOfLife() {
   );
 }
 
+/** Break a spoke label into short lines so long names don't run off the viewBox. */
+function wrapLabel(text: string, maxChars = 14): string[] {
+  const words = text.split(" ");
+  const lines: string[] = [];
+  let line = "";
+  for (const word of words) {
+    const candidate = line ? `${line} ${word}` : word;
+    if (candidate.length > maxChars && line) {
+      lines.push(line);
+      line = word;
+    } else {
+      line = candidate;
+    }
+  }
+  if (line) lines.push(line);
+  return lines;
+}
+
 export function DraggableRadar({
   scores,
   setScores,
   categories,
   readOnly = false,
+  labels,
+  min = 1,
+  color = "var(--primary)",
+  overlay,
+  clampValue,
+  showValues = true,
 }: {
   scores: Record<string, number>;
   setScores: (s: Record<string, number>) => void;
   categories: readonly string[];
   readOnly?: boolean;
+  /** Display names, when they differ from the score keys (e.g. a student-defined area). */
+  labels?: readonly string[];
+  /** Lowest value a spoke can be dragged to. Defaults to 1; use 0 for budgets. */
+  min?: number;
+  /** Accent for the polygon and handles. */
+  color?: string;
+  /** A second, dashed polygon drawn behind the primary one for comparison. */
+  overlay?: { scores: Record<string, number>; color?: string };
+  /** Final say on a dragged value — used to enforce a shared budget. */
+  clampValue?: (index: number, value: number) => number;
+  showValues?: boolean;
 }) {
   const size = 460;
   const cx = size / 2;
@@ -105,19 +140,22 @@ export function DraggableRadar({
   const [dragIdx, setDragIdx] = useState<number | null>(null);
   const [hover, setHover] = useState<number | null>(null);
 
+  /** Project a pointer position onto one spoke and write the value it lands on. */
+  const setFromPointer = (idx: number, clientX: number, clientY: number) => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const x = ((clientX - rect.left) / rect.width) * size - cx;
+    const y = ((clientY - rect.top) / rect.height) * size - cy;
+    const a = angle(idx);
+    const proj = x * Math.cos(a) + y * Math.sin(a);
+    const raw = Math.max(min, Math.min(10, Math.round((proj / r) * 10)));
+    setScores({ ...scores, [categories[idx]]: clampValue ? clampValue(idx, raw) : raw });
+  };
+
   useEffect(() => {
     if (dragIdx === null) return;
-    const move = (e: PointerEvent) => {
-      const svg = svgRef.current;
-      if (!svg) return;
-      const rect = svg.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * size - cx;
-      const y = ((e.clientY - rect.top) / rect.height) * size - cy;
-      const a = angle(dragIdx);
-      const proj = x * Math.cos(a) + y * Math.sin(a);
-      const v = Math.max(1, Math.min(10, Math.round((proj / r) * 10)));
-      setScores({ ...scores, [categories[dragIdx]]: v });
-    };
+    const move = (e: PointerEvent) => setFromPointer(dragIdx, e.clientX, e.clientY);
     const up = () => setDragIdx(null);
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
@@ -125,7 +163,9 @@ export function DraggableRadar({
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
     };
-  }, [dragIdx, scores, setScores, categories, r, cx, cy]);
+    // setFromPointer is recreated each render but reads only current props/state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dragIdx, scores, setScores, categories, r, cx, cy, min, clampValue]);
 
   const polygon = categories.map((c, i) => point(i, scores[c]).join(",")).join(" ");
 
@@ -151,39 +191,59 @@ export function DraggableRadar({
         const [x, y] = point(i, 10);
         return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="var(--border)" strokeWidth={1} />;
       })}
+      {overlay && (
+        <polygon
+          points={categories.map((c, i) => point(i, overlay.scores[c] ?? 0).join(",")).join(" ")}
+          fill={overlay.color ?? "var(--muted-foreground)"}
+          fillOpacity={0.12}
+          stroke={overlay.color ?? "var(--muted-foreground)"}
+          strokeWidth={2}
+          strokeDasharray="5 4"
+        />
+      )}
       <polygon
         points={polygon}
-        fill="var(--primary)"
+        fill={color}
         fillOpacity={0.22}
-        stroke="var(--primary)"
+        stroke={color}
         strokeWidth={2}
         style={{ transition: dragIdx === null ? "all 180ms ease-out" : "none" }}
       />
+      {/* Grab anywhere along a spoke, not just on its dot: when several areas share a
+          value their dots overlap, and at 0 all of them sit on top of each other. */}
+      {!readOnly &&
+        categories.map((c, i) => {
+          const [x, y] = point(i, 10.2);
+          return (
+            <line
+              key={c + "-hit"}
+              x1={cx}
+              y1={cy}
+              x2={x}
+              y2={y}
+              stroke="transparent"
+              strokeWidth={30}
+              strokeLinecap="round"
+              style={{ cursor: "grab" }}
+              onPointerDown={(e) => {
+                (e.target as Element).setPointerCapture(e.pointerId);
+                setDragIdx(i);
+              }}
+              onPointerEnter={() => setHover(i)}
+              onPointerLeave={() => setHover(null)}
+            />
+          );
+        })}
       {categories.map((c, i) => {
         const [x, y] = point(i, scores[c]);
         const isActive = dragIdx === i || hover === i;
         return (
           <g key={c}>
-            {!readOnly && (
-              <circle
-                cx={x}
-                cy={y}
-                r={22}
-                fill="transparent"
-                style={{ cursor: "grab" }}
-                onPointerDown={(e) => {
-                  (e.target as Element).setPointerCapture(e.pointerId);
-                  setDragIdx(i);
-                }}
-                onPointerEnter={() => setHover(i)}
-                onPointerLeave={() => setHover(null)}
-              />
-            )}
             <circle
               cx={x}
               cy={y}
               r={isActive ? 11 : 8}
-              fill="var(--primary)"
+              fill={color}
               stroke="var(--background)"
               strokeWidth={2}
               style={{ pointerEvents: "none", transition: dragIdx === null ? "r 120ms" : "none" }}
@@ -192,10 +252,28 @@ export function DraggableRadar({
         );
       })}
       {categories.map((c, i) => {
-        const [x, y] = point(i, 11.5);
+        // Spokes pointing left or right get their labels anchored just outside the
+        // outer ring rather than centred on it, so a long name can't sit on the shape.
+        const cos = Math.cos(angle(i));
+        const side = cos > 0.2 ? "start" : cos < -0.2 ? "end" : "middle";
+        const [x, y] = point(i, side === "middle" ? 11.5 : 10.4);
+        const lines = wrapLabel(labels?.[i] ?? c, side === "middle" ? 14 : 12);
+        const lineHeight = 13;
+        const total = lines.length + (showValues ? 1 : 0);
+        const top = y - ((total - 1) * lineHeight) / 2;
         return (
-          <text key={c + "-label"} x={x} y={y} textAnchor="middle" dominantBaseline="middle" className="fill-foreground" fontSize={11} fontWeight={600}>
-            {c} · {scores[c]}
+          <text key={c + "-label"} x={x} textAnchor={side} dominantBaseline="middle" className="fill-foreground" fontSize={11} fontWeight={600}>
+            {lines.map((line, li) => (
+              <tspan key={li} x={x} y={top + li * lineHeight}>
+                {line}
+              </tspan>
+            ))}
+            {showValues && (
+              <tspan x={x} y={top + lines.length * lineHeight} className="fill-muted-foreground" fontWeight={500}>
+                {scores[c]}
+                {overlay ? ` · ${overlay.scores[c] ?? 0}` : ""}
+              </tspan>
+            )}
           </text>
         );
       })}

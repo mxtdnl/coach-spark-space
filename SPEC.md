@@ -185,7 +185,7 @@ src/
 │   └── api/example.functions.ts  createServerFn example (unused stub)
 ├── exercises/
 │   ├── _shared.tsx          Shared UI primitives
-│   └── <37 exercise components>.tsx
+│   └── <38 exercise components>.tsx
 ├── components/
 │   ├── ThemeToggle.tsx      Light / system / dark control
 │   └── ui/                  shadcn/ui primitives (vendored, entirely unused)
@@ -209,7 +209,7 @@ export type Exercise = {
   component: ComponentType;  // Default-exported exercise component
 };
 
-export const EXERCISES: Exercise[] = [ /* 37 entries */ ];
+export const EXERCISES: Exercise[] = [ /* 38 entries */ ];
 export const getExercise  = (slug: string) => EXERCISES.find(e => e.slug === slug);
 export const getCategories = () => Array.from(new Set(EXERCISES.map(e => e.category))).sort();
 ```
@@ -349,7 +349,8 @@ Every exercise component:
 
 | Family | Mechanism | Exercises |
 | --- | --- | --- |
-| **Draggable radar** | SVG polygon, pointer-event drag along spokes, live morph; shared `DraggableRadar` exported from `WheelOfLife.tsx` and reused | Wheel of Life (8 areas), Self-Care Wheel (6), PERMA (5) |
+| **Draggable radar** | SVG polygon, drag anywhere along a spoke, live morph; shared `DraggableRadar` exported from `WheelOfLife.tsx` and reused. Optional props cover display labels distinct from score keys, a `min` of 0, an accent colour, a dashed comparison `overlay` polygon, and a `clampValue` hook for budget-constrained wheels | Wheel of Life (8 areas), Self-Care Wheel (6), PERMA (5), Wheel of Hult (8, twice — rating and budget) |
+| **Constrained budget** | A fixed pot of points spread across areas; every control clamps to both a per-area cap and the remaining budget | Wheel of Hult (35 points, max 10 per area) |
 | **Drag-and-drop zones** | HTML5 `draggable` / `onDragStart` / `onDrop`, hover-zone highlighting, click fallback | Circles of Control (concentric SVG rings), Ikigai (four overlapping circles), Urgent-Important (2×2), Must/Should/Could (3 columns), Decision Grid (2×2), Core Values (ranking) |
 | **Card deck** | Flip, select, lock-out, shuffle | Skills & Mindset Cards (12 cards, flip to reveal questions + linked activities), Ethical Dilemmas (6 scenarios, Classical/Business), Cognitive Distortions (shuffled quiz deck with scoring), Core Values (swipe/keep-discard) |
 | **Timers** | `useEffect` interval; countdown or phase animation | Box Breathing (4-4-4-4, configurable seconds/cycles, ref-authoritative timer), Idea Quickfire (3/5/10-minute sprint with live idea capture) |
@@ -363,11 +364,12 @@ Every exercise component:
 | **Reference hub** | Content-led with reflective inputs and cross-links | Perfectionism: A Practical Guide (mindsets, busters, affirmations, personal script, 6 outbound links) |
 | **Journaling** | Prompted long-form writing — deliberately un-gamified (P1) | Future Self, End-of-Year Review, Finding Passions, As-If, Walk and Talk |
 
-### 6.3 Catalogue (37 exercises, 15 categories)
+### 6.3 Catalogue (38 exercises, 16 categories)
 
 Categories in use: Beliefs & Thinking, Calming Techniques, Communication, Creativity,
 Decision-Making, Habits & Behaviour, Prioritization, Productivity, Public Speaking,
-Purpose & Direction, Reflection, Self-Awareness, Stress & Anxiety, Teamwork, Wellbeing.
+Purpose & Direction, Reflection, Self-Awareness, Stress & Anxiety, Student Life, Teamwork,
+Wellbeing.
 
 | Slug | Title | Category | Min | Structure | Export |
 | --- | --- | --- | --- | --- | --- |
@@ -408,8 +410,9 @@ Purpose & Direction, Reflection, Self-Awareness, Stress & Anxiety, Teamwork, Wel
 | `must-should-could` | Must Do, Should Do, Could Do | Prioritization | 10 | single view: tray → drag into 3 columns | ✅ |
 | `enhanced-to-do-list` | Enhanced To-Do List | Productivity | 12 | single view: priority/estimate/actual table | ✅ |
 | `actioning-and-objectives` | Actioning and Objectives | Public Speaking | 20 | numbered steps: overall objective → sections → points → verbs → rehearse | ✅ |
+| `wheel-of-hult` | Wheel of Hult | Student Life | 20 | intro → rate (radar) → allocate (budget radar) → compare (overlay + gap table) → actions → summary | ✅ |
 
-**Export column:** ✅ = a "Print / Save PDF" control exists today; ❌ = none. 27 of 37 have
+**Export column:** ✅ = a "Print / Save PDF" control exists today; ❌ = none. 28 of 38 have
 one; 10 do not. Box Breathing legitimately produces no artefact; the other nine are gaps
 (§7.3).
 
@@ -563,6 +566,11 @@ Gaps to close (specification for new and revised work):
   reachable by keyboard.
 - **A2** — The radar drag (`DraggableRadar`) needs an accessible numeric input per spoke
   (or arrow-key adjustment on a focusable handle with `role="slider"` and `aria-valuenow`).
+  **Pattern established:** Wheel of Hult pairs each radar with a labelled row of −/number/+
+  controls, so every spoke is reachable and adjustable by keyboard. The Wheel of Life,
+  Self-Care Wheel and PERMA still need the same treatment. Grabbing is also no longer
+  limited to the dot itself — the whole spoke is a drag target, which is what makes a
+  wheel usable when several areas share a value (or all sit at 0).
 - **A3** — Step changes should move focus to the new step's heading and announce via a live
   region, not only scroll to top.
 - **A4** — Timed exercises (Box Breathing, Idea Quickfire) should announce phase changes to
@@ -664,7 +672,7 @@ that must be audited and patched (the repo already carries a `seroval` override 
 `minimumReleaseAge` guard, so this is a live concern here), lint noise that hides real
 warnings, and — the biggest one — a misleading signal. A contributor opening
 `src/components/ui/` reasonably concludes that shadcn is this project's component layer and
-starts writing `<Card>`/`<Button>`/`<Dialog>` markup, while all 37 existing exercises compose
+starts writing `<Card>`/`<Button>`/`<Dialog>` markup, while all 38 existing exercises compose
 the seven primitives in `src/exercises/_shared.tsx`. That divergence would be much more
 expensive to unpick later than it is to prevent now.
 
@@ -676,7 +684,7 @@ come from the `tanstack_start_ts` template, not from a decision made for this pr
 1. **Adopt it.** Rebuild `_shared.tsx` on top of shadcn primitives and use them in new
    exercises. Gains accessible behaviour for free — Radix handles focus traps, keyboard
    navigation, and ARIA wiring that the hand-rolled primitives don't (directly relevant to
-   the A1–A5 gaps in §8.2). Costs a migration across 37 exercises to avoid a two-system split,
+   the A1–A5 gaps in §8.2). Costs a migration across 38 exercises to avoid a two-system split,
    and buys components most of these exercises don't need (menubar, carousel, OTP input,
    date picker, sidebar, resizable panels).
 2. **Prune it.** Delete `src/components/ui/`, `components.json`, and the dependencies reachable
