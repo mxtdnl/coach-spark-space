@@ -65,13 +65,13 @@ function ExercisePage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="no-print border-b border-border bg-card/50 backdrop-blur">
+      <header className="no-print border-b border-border bg-gradient-to-b from-ink-ochre-soft/70 to-card/40 backdrop-blur">
         <div className="mx-auto max-w-5xl px-6 py-5 flex items-center justify-between gap-4">
           <div className="min-w-0">
             <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">
               ← Library
             </Link>
-            <h1 className="text-lg font-semibold tracking-tight truncate">{exercise.title}</h1>
+            <h1 className="text-lg font-semibold tracking-tight truncate text-ink-red">{exercise.title}</h1>
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden text-xs text-muted-foreground whitespace-nowrap sm:inline">
@@ -119,7 +119,7 @@ function ExerciseHost({ slug, Component }: { slug: string; Component: React.Comp
   return (
     <>
       {saved && (
-        <div className="no-print mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-secondary/40 px-4 py-2.5 text-xs">
+        <div className="no-print mb-6 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-ink-brown/25 bg-ink-brown-soft/50 px-4 py-2.5 text-xs">
           <p className="text-muted-foreground">
             <span aria-hidden="true">💾 </span>
             Your answers are saved on this device only — they are never uploaded.

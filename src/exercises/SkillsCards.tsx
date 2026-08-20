@@ -18,7 +18,7 @@ const CARDS: Card[] = [
     id: "communication",
     title: "Communication",
     blurb: "Sharing your thoughts clearly, whether you are talking or writing.",
-    hue: 210,
+    hue: 18,
     levels: [
       "Hard to understand, not really thinking about who you are communicating with.",
       "Communicate clearly and adjust tone depending on who you're talking to.",
@@ -39,7 +39,7 @@ const CARDS: Card[] = [
     id: "critical-thinking",
     title: "Critical Thinking",
     blurb: "Thinking things through, asking questions, and forming your own opinion.",
-    hue: 262,
+    hue: 315,
     levels: [
       "Accepts everything without questioning; logic is unclear and all over the place.",
       "Can weigh pros and cons, checks facts, and builds solid arguments when needed.",
@@ -60,7 +60,7 @@ const CARDS: Card[] = [
     id: "collaboration",
     title: "Collaboration",
     blurb: "Working well with others: sharing ideas, listening, and sometimes taking the lead.",
-    hue: 172,
+    hue: 45,
     levels: [
       "Struggles to work in a group, or accept ideas that aren't your own. Not sure what you contribute.",
       "Can listen, share, and know when to lead or follow. Confident in what you offer a group.",
@@ -82,7 +82,7 @@ const CARDS: Card[] = [
     id: "creative-thinking",
     title: "Creative Thinking",
     blurb: "Coming up with new ideas, and the ability to problem solve.",
-    hue: 320,
+    hue: 300,
     levels: [
       "Sticks to what's familiar, doesn't explore options, has no process for solving problems.",
       "Thinks creatively, can test ideas and learn from trial and error. Some confidence in solving problems.",
@@ -103,7 +103,7 @@ const CARDS: Card[] = [
     id: "learning-to-learn",
     title: "Learning to Learn",
     blurb: "Being in charge of your own growth, development, and learning.",
-    hue: 32,
+    hue: 68,
     levels: [
       "Does not reflect much (or at all); learning is sporadic and unorganised, or waiting for direction from others.",
       "Follows a plan for learning, takes feedback, and adjusts along the way. Keeps an eye out for new methods.",
@@ -123,7 +123,7 @@ const CARDS: Card[] = [
     id: "life-skills",
     title: "Life Skills",
     blurb: "Managing everyday life — your time, energy, and well-being.",
-    hue: 145,
+    hue: 30,
     levels: [
       "Often stressed or disorganised, struggles with the basics.",
       "Can stay on top of things, keeps routines, and can manage stress.",
@@ -148,7 +148,7 @@ const CARDS: Card[] = [
     id: "self-awareness",
     title: "Self-Awareness",
     blurb: "Knowing your strengths, triggers, and how you affect others.",
-    hue: 197,
+    hue: 345,
     levels: [
       "Does not do any reflection; reacts emotionally without thinking. No idea of strengths or how to use them.",
       "Can identify some strengths and how they present themselves. Takes feedback well and can adjust behaviour.",
@@ -171,7 +171,7 @@ const CARDS: Card[] = [
     id: "identity-meaning",
     title: "Identity & Meaning",
     blurb: "Knowing what matters to you and making choices that reflect who you are.",
-    hue: 280,
+    hue: 285,
     levels: [
       "Unsure of values or direction: easily influenced by others' opinions.",
       "Has a sense of purpose and values, and tries to make choices that align with it.",
@@ -193,7 +193,7 @@ const CARDS: Card[] = [
     id: "global-mindset",
     title: "Global Mindset",
     blurb: "Being open to different cultures, views, and people.",
-    hue: 190,
+    hue: 58,
     levels: [
       "Sticks to what's familiar; may miss, ignore, or openly dismiss differences.",
       "Welcomes other perspectives; can adjust to different cultural settings as needed.",
@@ -213,7 +213,7 @@ const CARDS: Card[] = [
     id: "ethical-mindset",
     title: "Ethical Mindset",
     blurb: "Doing the right thing — even when it's hard.",
-    hue: 12,
+    hue: 10,
     levels: [
       "Does not consider the impact of choices at all. No personal code of ethics.",
       "Follows rules, speaks up when needed, and acts fairly. Can articulate ethical dilemmas.",
@@ -235,7 +235,7 @@ const CARDS: Card[] = [
     id: "growth-mindset",
     title: "Growth Mindset",
     blurb: "Believing that you can grow through effort, even in the face of failure.",
-    hue: 100,
+    hue: 38,
     levels: [
       "Avoids challenges and takes failure personally. Fully in a fixed mindset.",
       "Tries new things, makes mistakes and keeps going. Able to identify areas of growth.",
@@ -255,7 +255,7 @@ const CARDS: Card[] = [
     id: "entrepreneurial-mindset",
     title: "Entrepreneurial Mindset",
     blurb: "Taking initiative and turning ideas into action.",
-    hue: 45,
+    hue: 325,
     levels: [
       "Focuses on problems and complains. Does not take action.",
       "Recognises problems as they occur and solves them.",
@@ -276,11 +276,22 @@ const CARDS: Card[] = [
 type Step = "intro" | "spread" | "strengths" | "develop" | "focus" | "work" | "summary";
 const STEPS: Step[] = ["intro", "spread", "strengths", "develop", "focus", "work", "summary"];
 
+/*
+ * Cards keep their own hue so the twelve stay distinguishable, but the hues
+ * are drawn from the house range (deep red through orange and ochre to
+ * purple) and desaturated so a spread of them reads as one warm deck. They
+ * stay light in both themes — these are printed cards on a table.
+ */
 function cardStyle(hue: number) {
   return {
-    background: `linear-gradient(150deg, hsl(${hue} 70% 96%), hsl(${hue} 60% 88%))`,
-    borderColor: `hsl(${hue} 45% 72%)`,
+    background: `linear-gradient(150deg, hsl(${hue} 45% 95%), hsl(${hue} 38% 86%))`,
+    borderColor: `hsl(${hue} 32% 70%)`,
   } as React.CSSProperties;
+}
+
+/** Ink for text sitting on a card: the card's own hue, taken almost to brown. */
+function cardInk(hue: number) {
+  return `hsl(${hue} 50% 24%)`;
 }
 
 export default function SkillsCards() {
@@ -376,20 +387,20 @@ export default function SkillsCards() {
                   <div className="flex items-start justify-between gap-2">
                     <h3
                       className="text-sm font-bold uppercase tracking-wide"
-                      style={{ color: `hsl(${c.hue} 60% 25%)` }}
+                      style={{ color: cardInk(c.hue) }}
                     >
                       {c.title}
                     </h3>
                     <button
                       onClick={() => setFlipped((f) => ({ ...f, [c.id]: !f[c.id] }))}
-                      className="shrink-0 rounded-full bg-white/70 px-2 py-0.5 text-[11px] font-medium text-slate-700 hover:bg-white"
+                      className="shrink-0 rounded-full bg-white/70 px-2 py-0.5 text-[11px] font-medium text-[#4a3327] hover:bg-white"
                     >
                       {isFlipped ? "Front" : "Flip"}
                     </button>
                   </div>
 
                   {!isFlipped ? (
-                    <div className="mt-3 space-y-3 text-slate-800">
+                    <div className="mt-3 space-y-3 text-[#33231a]">
                       <p className="text-sm">{c.blurb}</p>
                       <div className="grid gap-1.5">
                         {c.levels.map((l, i) => (
@@ -406,7 +417,7 @@ export default function SkillsCards() {
                       </div>
                     </div>
                   ) : (
-                    <div className="mt-3 space-y-3 text-slate-800">
+                    <div className="mt-3 space-y-3 text-[#33231a]">
                       <div>
                         <p className="text-[11px] font-bold uppercase tracking-wider">Questions</p>
                         <ul className="mt-1 list-disc pl-4 text-[12px] leading-snug space-y-1">
@@ -421,7 +432,7 @@ export default function SkillsCards() {
                           {c.activities.map((a) => (
                             <li key={a.name}>
                               <span className="font-medium">{a.name}</span>
-                              {a.note && <span className="text-slate-600"> — {a.note}</span>}
+                              {a.note && <span className="text-[#6b5040]"> — {a.note}</span>}
                             </li>
                           ))}
                         </ul>
@@ -432,7 +443,7 @@ export default function SkillsCards() {
                   <button
                     disabled={locked}
                     onClick={() => togglePick(c.id, step === "spread" ? "top" : "low")}
-                    className="mt-4 w-full rounded-full bg-slate-900/85 px-3 py-1.5 text-xs font-medium text-white hover:bg-slate-900 disabled:opacity-40"
+                    className="mt-4 w-full rounded-full bg-[#5a1e1a]/90 px-3 py-1.5 text-xs font-medium text-white hover:bg-[#5a1e1a] disabled:opacity-40"
                   >
                     {locked
                       ? "In your top 3"
@@ -466,7 +477,7 @@ export default function SkillsCards() {
           </div>
           {top.map((id) => (
             <div key={id} className="rounded-2xl border p-4" style={cardStyle(byId[id].hue)}>
-              <h3 className="text-sm font-bold uppercase tracking-wide" style={{ color: `hsl(${byId[id].hue} 60% 25%)` }}>
+              <h3 className="text-sm font-bold uppercase tracking-wide" style={{ color: cardInk(byId[id].hue) }}>
                 {byId[id].title}
               </h3>
               <TextArea
@@ -498,10 +509,10 @@ export default function SkillsCards() {
                 className={`rounded-2xl border p-4 text-left transition ${focus === id ? "ring-2 ring-primary shadow-lg" : ""}`}
                 style={cardStyle(byId[id].hue)}
               >
-                <h3 className="text-sm font-bold uppercase tracking-wide" style={{ color: `hsl(${byId[id].hue} 60% 25%)` }}>
+                <h3 className="text-sm font-bold uppercase tracking-wide" style={{ color: cardInk(byId[id].hue) }}>
                   {byId[id].title}
                 </h3>
-                <p className="mt-2 text-sm text-slate-800">{byId[id].blurb}</p>
+                <p className="mt-2 text-sm text-[#33231a]">{byId[id].blurb}</p>
               </button>
             ))}
           </div>
@@ -525,11 +536,11 @@ export default function SkillsCards() {
       {step === "work" && focusCard && (
         <section className="space-y-4">
           <div className="rounded-2xl border p-5" style={cardStyle(focusCard.hue)}>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-600">Focus card</p>
-            <h2 className="text-xl font-bold" style={{ color: `hsl(${focusCard.hue} 60% 25%)` }}>
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#6b5040]">Focus card</p>
+            <h2 className="text-xl font-bold" style={{ color: cardInk(focusCard.hue) }}>
               {focusCard.title}
             </h2>
-            <p className="mt-1 text-sm text-slate-800">{focusCard.blurb}</p>
+            <p className="mt-1 text-sm text-[#33231a]">{focusCard.blurb}</p>
             <div className="mt-3 grid gap-2 sm:grid-cols-3">
               {focusCard.levels.map((l, i) => (
                 <div key={i} className="rounded-lg bg-white/70 px-3 py-2 text-[11px] leading-snug">

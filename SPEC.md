@@ -112,6 +112,23 @@ All colour flows through CSS custom properties defined in `src/styles.css` (oklc
 `border-border`). Exercise-specific colour (card hues, Ikigai zones, thinking hats) is the
 only sanctioned exception, and is used as accent on top of the token system.
 
+The palette is warm: a light ochre ground in the light theme (burnt umber after dark), with
+deep red carrying `--primary`, and brown, orange and purple as the supporting accents. There
+are no blue-grey neutrals — the greys are all warm. Alongside the shadcn tokens, the four
+house accents are exposed as their own utilities so colour-coded content stays on-palette:
+
+| Token | Utility | Typical use |
+| --- | --- | --- |
+| `--ink-red` / `--ink-red-soft` | `text-ink-red`, `bg-ink-red-soft` | Emphasis, headings, the strongest of a set |
+| `--ink-brown` / `--ink-brown-soft` | `text-ink-brown`, `bg-ink-brown-soft` | Quiet chrome — tags, saved-work banners |
+| `--ink-orange` / `--ink-orange-soft` | `text-ink-orange`, `bg-ink-orange-soft` | Section eyebrows, focus borders, warnings |
+| `--ink-purple` / `--ink-purple-soft` | `text-ink-purple`, `bg-ink-purple-soft` | Second accent — status pills, contrasting quadrants |
+| `--ink-ochre` / `--ink-ochre-soft` | `text-ink-ochre`, `bg-ink-ochre-soft` | Header washes, the ground itself |
+
+The `-soft` companion of each is a tint sized to take its solid partner as text in both
+themes. Reach for these instead of a Tailwind palette colour (`amber-500`, `sky-700`) —
+those don't follow the theme and read as foreign against the ochre.
+
 ### P9 — Shared primitives, not shared abstractions
 
 `src/exercises/_shared.tsx` provides small, unopinionated building blocks — `InfoCard`,
@@ -577,8 +594,8 @@ Gaps to close (specification for new and revised work):
   screen readers and offer a reduced-motion path (`prefers-reduced-motion`).
 - **A5** — Colour must never be the sole carrier of meaning (thinking hats, priority A–D
   opacity, Ikigai zones all currently lean on colour).
-- **A6** — Contrast: hue-derived inline colours (e.g. `hsl(${hue} 60% 25%)` on card titles)
-  should be checked against their backgrounds in both themes.
+- **A6** — Contrast: hue-derived inline colours (`cardInk(hue)` on card titles) should be
+  checked against their backgrounds in both themes.
 - **A7** — ~~The dark theme is defined in tokens but the app never sets `.dark`.~~
   **Done.** `src/lib/theme.ts` + `ThemeToggle` give light / dark / system; the choice is
   applied by an inline head script before first paint, and `color-scheme` is set so native

@@ -50,8 +50,8 @@ export default function HighStandards() {
                   <Toggle label="Allows flexibility?" value={e.flexible} onChange={(v) => update(i, { flexible: v })} />
                 </div>
                 {(e.realistic === "no" || e.flexible === "no") && (
-                  <div className="rounded-md border border-amber-500/30 bg-amber-500/5 p-3">
-                    <label className="text-xs text-amber-700 dark:text-amber-300 font-medium">Adjusted standard — more realistic & flexible</label>
+                  <div className="rounded-md border border-ink-orange/30 bg-ink-orange/10 p-3">
+                    <label className="text-xs text-ink-orange font-medium">Adjusted standard — more realistic & flexible</label>
                     <TextArea rows={2} value={e.adjusted} onChange={(ev) => update(i, { adjusted: ev.target.value })} className="mt-2" placeholder="Rewrite it so it leaves room for being human." />
                   </div>
                 )}
@@ -75,7 +75,7 @@ function Toggle({ label, value, onChange }: { label: string; value: "" | "yes" |
     <div className="flex items-center gap-2">
       <span className="text-muted-foreground">{label}</span>
       <button onClick={() => onChange("yes")} className={`rounded-md border px-3 py-1 text-xs ${value === "yes" ? "border-primary bg-primary/10" : "border-border"}`}>Yes</button>
-      <button onClick={() => onChange("no")} className={`rounded-md border px-3 py-1 text-xs ${value === "no" ? "border-amber-500 bg-amber-500/10" : "border-border"}`}>No</button>
+      <button onClick={() => onChange("no")} className={`rounded-md border px-3 py-1 text-xs ${value === "no" ? "border-ink-orange bg-ink-orange/15" : "border-border"}`}>No</button>
     </div>
   );
 }
