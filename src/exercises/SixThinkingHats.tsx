@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea, TextInput } from "./_shared";
 
 const HATS = [
@@ -21,11 +22,11 @@ function Hat({ color, size = 96, worn = false }: { color: string; size?: number;
 }
 
 export default function SixThinkingHats() {
-  const [step, setStep] = useState<"intro" | "problem" | "hats" | "board" | "decide" | "summary">("intro");
-  const [problem, setProblem] = useState("");
-  const [notes, setNotes] = useState<Record<string, string>>({});
-  const [hatIdx, setHatIdx] = useState(0);
-  const [decision, setDecision] = useState("");
+  const [step, setStep] = usePersistentState<"intro" | "problem" | "hats" | "board" | "decide" | "summary">("six-thinking-hats", "step", "intro");
+  const [problem, setProblem] = usePersistentState("six-thinking-hats", "problem", "");
+  const [notes, setNotes] = usePersistentState<Record<string, string>>("six-thinking-hats", "notes", {});
+  const [hatIdx, setHatIdx] = usePersistentState("six-thinking-hats", "hatIdx", 0);
+  const [decision, setDecision] = usePersistentState("six-thinking-hats", "decision", "");
 
   const hat = HATS[hatIdx];
   const done = HATS.filter((h) => (notes[h.key] ?? "").trim()).length;
@@ -72,8 +73,8 @@ export default function SixThinkingHats() {
             </div>
             <div className="ml-auto flex items-center gap-2">
               <svg width={56} height={56} viewBox="0 0 56 56">
-                <circle cx="28" cy="28" r={R} fill="none" stroke="hsl(var(--border))" strokeWidth={5} />
-                <circle cx="28" cy="28" r={R} fill="none" stroke="hsl(var(--primary))" strokeWidth={5} strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C * (1 - done / HATS.length)} transform="rotate(-90 28 28)" style={{ transition: "stroke-dashoffset 300ms" }} />
+                <circle cx="28" cy="28" r={R} fill="none" stroke="var(--border)" strokeWidth={5} />
+                <circle cx="28" cy="28" r={R} fill="none" stroke="var(--primary)" strokeWidth={5} strokeLinecap="round" strokeDasharray={C} strokeDashoffset={C * (1 - done / HATS.length)} transform="rotate(-90 28 28)" style={{ transition: "stroke-dashoffset 300ms" }} />
                 <text x="28" y="29" textAnchor="middle" dominantBaseline="middle" fontSize="13" fontWeight="700" className="fill-foreground">{done}/6</text>
               </svg>
             </div>

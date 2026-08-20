@@ -1,15 +1,16 @@
 import { useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { GhostButton, IntroGrid, PrimaryButton, TextArea, TextInput } from "./_shared";
 
 type Task = { id: string; text: string; phase: string };
 const PHASES = ["Research", "Planning", "Doing", "Review", "Admin"];
 
 export default function ProjectBreakdown() {
-  const [project, setProject] = useState("");
-  const [deadline, setDeadline] = useState("");
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [draft, setDraft] = useState("");
-  const [draftPhase, setDraftPhase] = useState(PHASES[0]);
+  const [project, setProject] = usePersistentState("project-breakdown", "project", "");
+  const [deadline, setDeadline] = usePersistentState("project-breakdown", "deadline", "");
+  const [tasks, setTasks] = usePersistentState<Task[]>("project-breakdown", "tasks", []);
+  const [draft, setDraft] = usePersistentState("project-breakdown", "draft", "");
+  const [draftPhase, setDraftPhase] = usePersistentState("project-breakdown", "draftPhase", PHASES[0]);
 
   const add = () => {
     if (!draft.trim()) return;

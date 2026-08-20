@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, TextInput, PrimaryButton } from "./_shared";
 
 type Priority = "A" | "B" | "C" | "D";
@@ -23,9 +24,9 @@ const parseMins = (s: string) => {
 };
 
 export default function EnhancedTodo() {
-  const [period, setPeriod] = useState("");
-  const [rows, setRows] = useState<Row[]>([]);
-  const [draft, setDraft] = useState({ priority: "A" as Priority, task: "", estimate: "" });
+  const [period, setPeriod] = usePersistentState("enhanced-to-do-list", "period", "");
+  const [rows, setRows] = usePersistentState<Row[]>("enhanced-to-do-list", "rows", []);
+  const [draft, setDraft] = usePersistentState("enhanced-to-do-list", "draft", { priority: "A" as Priority, task: "", estimate: "" });
 
   const add = () => {
     if (!draft.task.trim()) return;
@@ -86,7 +87,7 @@ export default function EnhancedTodo() {
                 }`}
                 style={
                   draft.priority === p
-                    ? { background: "hsl(var(--primary))", opacity: PRIORITY_OPACITY[p] + 0.0 }
+                    ? { background: "var(--primary)", opacity: PRIORITY_OPACITY[p] + 0.0 }
                     : undefined
                 }
               >
@@ -129,7 +130,7 @@ export default function EnhancedTodo() {
                   <td className="px-4 py-2">
                     <span
                       className="inline-grid h-7 w-7 place-items-center rounded-full text-xs font-semibold text-primary-foreground"
-                      style={{ background: "hsl(var(--primary))", opacity: PRIORITY_OPACITY[r.priority] }}
+                      style={{ background: "var(--primary)", opacity: PRIORITY_OPACITY[r.priority] }}
                     >
                       {r.priority}
                     </span>

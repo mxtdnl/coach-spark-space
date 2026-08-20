@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { EXERCISES, getCategories } from "@/lib/exercises";
+import { clearAllExercises, useSavedSlugs } from "@/lib/exercise-storage";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -25,7 +27,9 @@ export const Route = createFileRoute("/")({
 function LibraryHome() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<string | null>(null);
+  const [confirmingClear, setConfirmingClear] = useState(false);
   const categories = getCategories();
+  const inProgress = useSavedSlugs();
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -44,9 +48,12 @@ function LibraryHome() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-border bg-card/50 backdrop-blur">
         <div className="mx-auto max-w-5xl px-6 py-8">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Coaching Exercise Library
-          </h1>
+          <div className="flex items-start justify-between gap-4">
+            <h1 className="text-2xl font-semibold tracking-tight">
+              Coaching Exercise Library
+            </h1>
+            <ThemeToggle />
+          </div>
           <p className="text-sm text-muted-foreground mt-2 max-w-2xl">
             Interactive versions of coaching worksheets. Pick one, work through it
             online, and get a clear result without printing anything.
@@ -107,7 +114,12 @@ function LibraryHome() {
                     <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                       {e.category}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="flex items-center gap-2 text-xs text-muted-foreground">
+                      {inProgress.has(e.slug) && (
+                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                          In progress
+                        </span>
+                      )}
                       ~{e.estimatedMinutes} min
                     </span>
                   </div>
@@ -136,8 +148,43 @@ function LibraryHome() {
           </ul>
         )}
 
+        {inProgress.size > 0 && (
+          <div className="flex flex-wrap items-center justify-center gap-3 rounded-lg border border-border bg-secondary/40 px-4 py-3 text-xs">
+            <p className="text-muted-foreground">
+              {inProgress.size} exercise{inProgress.size === 1 ? "" : "s"} saved on this
+              device. Nothing is uploaded — clearing your browser data removes it.
+            </p>
+            {confirmingClear ? (
+              <span className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    clearAllExercises();
+                    setConfirmingClear(false);
+                  }}
+                  className="rounded-md bg-destructive px-2.5 py-1 font-medium text-destructive-foreground hover:opacity-90"
+                >
+                  Yes, clear everything
+                </button>
+                <button
+                  onClick={() => setConfirmingClear(false)}
+                  className="rounded-md border border-border px-2.5 py-1 hover:bg-secondary"
+                >
+                  Cancel
+                </button>
+              </span>
+            ) : (
+              <button
+                onClick={() => setConfirmingClear(true)}
+                className="rounded-md border border-border px-2.5 py-1 hover:bg-secondary"
+              >
+                Clear all saved answers
+              </button>
+            )}
+          </div>
+        )}
+
         <p className="text-xs text-muted-foreground text-center pt-8">
-          More exercises coming soon. Send a PDF to add it to the library.
+          More exercises coming soon.
         </p>
       </main>
     </div>

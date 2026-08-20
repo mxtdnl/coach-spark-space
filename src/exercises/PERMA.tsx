@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, PrimaryButton, TextArea } from "./_shared";
 import { DraggableRadar } from "./WheelOfLife";
 
@@ -14,11 +15,11 @@ const AREAS = [
 type Entry = { score: number; notes: string };
 
 export default function PERMA() {
-  const [step, setStep] = useState<"intro" | "reflect" | "summary">("intro");
-  const [data, setData] = useState<Record<string, Entry>>(() =>
+  const [step, setStep] = usePersistentState<"intro" | "reflect" | "summary">("perma-model", "step", "intro");
+  const [data, setData] = usePersistentState<Record<string, Entry>>("perma-model", "data", () =>
     Object.fromEntries(AREAS.map((a) => [a.key, { score: 5, notes: "" }])),
   );
-  const [focus, setFocus] = useState("");
+  const [focus, setFocus] = usePersistentState("perma-model", "focus", "");
 
   const update = (k: string, patch: Partial<Entry>) =>
     setData((d) => ({ ...d, [k]: { ...d[k], ...patch } }));

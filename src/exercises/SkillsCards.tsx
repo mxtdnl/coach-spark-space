@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Link } from "@tanstack/react-router";
 import { IntroGrid, PrimaryButton, GhostButton, TextArea } from "./_shared";
 
@@ -283,15 +284,15 @@ function cardStyle(hue: number) {
 }
 
 export default function SkillsCards() {
-  const [step, setStep] = useState<Step>("intro");
+  const [step, setStep] = usePersistentState<Step>("skills-and-mindset-cards", "step", "intro");
   const [flipped, setFlipped] = useState<Record<string, boolean>>({});
-  const [top, setTop] = useState<string[]>([]);
-  const [low, setLow] = useState<string[]>([]);
-  const [why, setWhy] = useState<Record<string, string>>({});
-  const [focus, setFocus] = useState<string | null>(null);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [plan, setPlan] = useState("");
-  const [bridge, setBridge] = useState<Record<string, string>>({});
+  const [top, setTop] = usePersistentState<string[]>("skills-and-mindset-cards", "top", []);
+  const [low, setLow] = usePersistentState<string[]>("skills-and-mindset-cards", "low", []);
+  const [why, setWhy] = usePersistentState<Record<string, string>>("skills-and-mindset-cards", "why", {});
+  const [focus, setFocus] = usePersistentState<string | null>("skills-and-mindset-cards", "focus", null);
+  const [answers, setAnswers] = usePersistentState<Record<string, string>>("skills-and-mindset-cards", "answers", {});
+  const [plan, setPlan] = usePersistentState("skills-and-mindset-cards", "plan", "");
+  const [bridge, setBridge] = usePersistentState<Record<string, string>>("skills-and-mindset-cards", "bridge", {});
 
   const byId = useMemo(() => Object.fromEntries(CARDS.map((c) => [c.id, c])), []);
   const focusCard = focus ? byId[focus] : null;

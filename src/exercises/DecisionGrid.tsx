@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { GhostButton, IntroGrid, PrimaryButton, TextInput } from "./_shared";
 
 type Option = "yes" | "no";
@@ -20,9 +21,9 @@ const ZONES: { key: Exclude<Zone, "tray">; option: Option; time: Time; valence: 
 ];
 
 export default function DecisionGrid() {
-  const [decision, setDecision] = useState("");
-  const [draft, setDraft] = useState("");
-  const [items, setItems] = useState<Item[]>([]);
+  const [decision, setDecision] = usePersistentState("decision-grid", "decision", "");
+  const [draft, setDraft] = usePersistentState("decision-grid", "draft", "");
+  const [items, setItems] = usePersistentState<Item[]>("decision-grid", "items", []);
   const [dragId, setDragId] = useState<string | null>(null);
 
   const add = () => {

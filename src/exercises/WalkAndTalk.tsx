@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, IntroGrid, TextArea } from "./_shared";
 
 const LEGEND = [
@@ -21,7 +22,7 @@ const STYLE: Record<string, string> = {
 };
 
 export default function WalkAndTalk() {
-  const [text, setText] = useState("");
+  const [text, setText] = usePersistentState("walk-and-talk", "text", "");
 
   const highlighted = useMemo(() => {
     const parts = text.split(/([.,?!:—-])/g);

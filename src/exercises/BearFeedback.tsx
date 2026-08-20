@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const STEPS = [
@@ -60,11 +61,11 @@ const EXAMPLES = [
 ];
 
 export default function BearFeedback() {
-  const [step, setStep] = useState<"intro" | "examples" | "build" | "summary">("intro");
+  const [step, setStep] = usePersistentState<"intro" | "examples" | "build" | "summary">("bear-feedback-model", "step", "intro");
   const [exIdx, setExIdx] = useState(0);
-  const [idx, setIdx] = useState(0);
-  const [text, setText] = useState<Record<string, string>>({});
-  const [checked, setChecked] = useState<string[]>([]);
+  const [idx, setIdx] = usePersistentState("bear-feedback-model", "idx", 0);
+  const [text, setText] = usePersistentState<Record<string, string>>("bear-feedback-model", "text", {});
+  const [checked, setChecked] = usePersistentState<string[]>("bear-feedback-model", "checked", []);
 
   const current = STEPS[idx];
   const script = STEPS.map((s) => text[s.key]?.trim()).filter(Boolean).join(" ");
@@ -134,7 +135,7 @@ export default function BearFeedback() {
               <div className="mt-4 space-y-2">
                 {CHECKS.map((c) => (
                   <label key={c} className="flex items-center gap-2 text-sm">
-                    <input type="checkbox" checked={checked.includes(c)} onChange={() => setChecked((s) => s.includes(c) ? s.filter((x) => x !== c) : [...s, c])} className="accent-[hsl(var(--primary))]" />
+                    <input type="checkbox" checked={checked.includes(c)} onChange={() => setChecked((s) => s.includes(c) ? s.filter((x) => x !== c) : [...s, c])} className="accent-[var(--primary)]" />
                     <span className={checked.includes(c) ? "text-muted-foreground line-through" : ""}>{c}</span>
                   </label>
                 ))}

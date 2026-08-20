@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, PrimaryButton, TextArea, TextInput } from "./_shared";
 
 type Log = {
@@ -20,9 +21,11 @@ const empty = (): Log => ({
 });
 
 export default function ThoughtLogging() {
-  const [step, setStep] = useState<"intro" | "logs">("intro");
-  const [logs, setLogs] = useState<Log[]>([empty()]);
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [step, setStep] = usePersistentState<"intro" | "logs">("thought-logging", "step", "intro");
+  const [logs, setLogs] = usePersistentState<Log[]>("thought-logging", "logs", [empty()]);
+  // Persisted so a student returning mid-log lands back inside the entry they
+  // were writing, rather than on a collapsed list.
+  const [openId, setOpenId] = usePersistentState<string | null>("thought-logging", "openId", null);
 
   const update = (id: string, patch: Partial<Log>) =>
     setLogs((ls) => ls.map((l) => (l.id === id ? { ...l, ...patch } : l)));

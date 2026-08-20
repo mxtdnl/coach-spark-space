@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea, TextInput } from "./_shared";
 
 type Dilemma = {
@@ -78,16 +79,16 @@ const DILEMMAS: Dilemma[] = [
 const VALUES = ["Fairness", "Honesty", "Loyalty", "Results", "Care", "Integrity", "Responsibility", "Courage", "Safety", "Growth", "Respect", "Justice"];
 
 export default function EthicalDilemmas() {
-  const [step, setStep] = useState<"intro" | "pick" | "gut" | "weigh" | "decide" | "summary">("intro");
-  const [group, setGroup] = useState<"Classical" | "Business">("Classical");
-  const [key, setKey] = useState<string | null>(null);
-  const [gut, setGut] = useState<"A" | "B" | null>(null);
-  const [gutWhy, setGutWhy] = useState("");
-  const [conseq, setConseq] = useState<Record<string, string>>({});
-  const [values, setValues] = useState<string[]>([]);
-  const [views, setViews] = useState<Record<string, string>>({});
-  const [finalChoice, setFinal] = useState<"A" | "B" | null>(null);
-  const [reason, setReason] = useState("");
+  const [step, setStep] = usePersistentState<"intro" | "pick" | "gut" | "weigh" | "decide" | "summary">("ethical-dilemmas", "step", "intro");
+  const [group, setGroup] = usePersistentState<"Classical" | "Business">("ethical-dilemmas", "group", "Classical");
+  const [key, setKey] = usePersistentState<string | null>("ethical-dilemmas", "key", null);
+  const [gut, setGut] = usePersistentState<"A" | "B" | null>("ethical-dilemmas", "gut", null);
+  const [gutWhy, setGutWhy] = usePersistentState("ethical-dilemmas", "gutWhy", "");
+  const [conseq, setConseq] = usePersistentState<Record<string, string>>("ethical-dilemmas", "conseq", {});
+  const [values, setValues] = usePersistentState<string[]>("ethical-dilemmas", "values", []);
+  const [views, setViews] = usePersistentState<Record<string, string>>("ethical-dilemmas", "views", {});
+  const [finalChoice, setFinal] = usePersistentState<"A" | "B" | null>("ethical-dilemmas", "finalChoice", null);
+  const [reason, setReason] = usePersistentState("ethical-dilemmas", "reason", "");
 
   const d = DILEMMAS.find((x) => x.key === key) ?? null;
   const label = (c: "A" | "B" | null) => (!d || !c ? "—" : c === "A" ? d.optionA : d.optionB);

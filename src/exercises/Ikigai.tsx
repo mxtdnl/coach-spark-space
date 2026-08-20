@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { GhostButton, IntroGrid, PrimaryButton, TextArea, TextInput } from "./_shared";
 
 type Zone = "love" | "good" | "world" | "paid" | "ikigai";
@@ -9,7 +10,7 @@ const ZONES: Record<Zone, { label: string; sub: string; hint: string; color: str
   good: { label: "Good at", sub: "Vocation", hint: "Your talents and natural strengths.", color: "#3b82f6" },
   world: { label: "World needs", sub: "Mission", hint: "How you make a positive impact.", color: "#10b981" },
   paid: { label: "Paid for", sub: "Profession", hint: "Where your skills meet a market.", color: "#f59e0b" },
-  ikigai: { label: "Ikigai", sub: "All four meet", hint: "Drag here what sits in all four.", color: "hsl(var(--primary))" },
+  ikigai: { label: "Ikigai", sub: "All four meet", hint: "Drag here what sits in all four.", color: "var(--primary)" },
 };
 
 // Circle layout (viewBox 400x400)
@@ -23,10 +24,10 @@ const R = 105;
 const CENTRE = { cx: 200, cy: 190 };
 
 export default function Ikigai() {
-  const [step, setStep] = useState<"intro" | "fill" | "summary">("intro");
-  const [chips, setChips] = useState<Chip[]>([]);
-  const [draft, setDraft] = useState("");
-  const [draftZone, setDraftZone] = useState<Zone>("love");
+  const [step, setStep] = usePersistentState<"intro" | "fill" | "summary">("ikigai", "step", "intro");
+  const [chips, setChips] = usePersistentState<Chip[]>("ikigai", "chips", []);
+  const [draft, setDraft] = usePersistentState("ikigai", "draft", "");
+  const [draftZone, setDraftZone] = usePersistentState<Zone>("ikigai", "draftZone", "love");
   const [dragId, setDragId] = useState<string | null>(null);
   const [hoverZone, setHoverZone] = useState<Zone | null>(null);
 
@@ -90,8 +91,8 @@ export default function Ikigai() {
                   cx={CENTRE.cx}
                   cy={CENTRE.cy}
                   r={26}
-                  fill="hsl(var(--background))"
-                  stroke="hsl(var(--primary))"
+                  fill="var(--background)"
+                  stroke="var(--primary)"
                   strokeWidth={hoverZone === "ikigai" ? 3 : 1.5}
                   strokeDasharray="4 3"
                   style={{ transition: "all 120ms" }}

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, PrimaryButton } from "./_shared";
 
 const PHASES = [
@@ -9,8 +10,8 @@ const PHASES = [
 ] as const;
 
 export default function BoxBreathing() {
-  const [secondsPerPhase, setSeconds] = useState(4);
-  const [totalCycles, setTotalCycles] = useState(4);
+  const [secondsPerPhase, setSeconds] = usePersistentState("box-breathing", "secondsPerPhase", 4);
+  const [totalCycles, setTotalCycles] = usePersistentState("box-breathing", "totalCycles", 4);
   const [running, setRunning] = useState(false);
   const [cycle, setCycle] = useState(0);
   const [phaseIdx, setPhaseIdx] = useState(0);
@@ -202,7 +203,7 @@ function BreathingBox({
         width={inner}
         height={inner}
         fill="none"
-        stroke="hsl(var(--border))"
+        stroke="var(--border)"
         strokeWidth={2}
         rx={12}
       />
@@ -211,12 +212,12 @@ function BreathingBox({
         y={pad}
         width={inner}
         height={inner}
-        fill="hsl(var(--primary))"
+        fill="var(--primary)"
         fillOpacity={phaseIdx === 0 || phaseIdx === 1 ? 0.08 : 0}
         rx={12}
       />
-      <circle cx={dx} cy={dy} r={r * 2.2} fill="hsl(var(--primary))" fillOpacity={0.12} />
-      <circle cx={dx} cy={dy} r={r} fill="hsl(var(--primary))" />
+      <circle cx={dx} cy={dy} r={r * 2.2} fill="var(--primary)" fillOpacity={0.12} />
+      <circle cx={dx} cy={dy} r={r} fill="var(--primary)" />
     </svg>
   );
 }

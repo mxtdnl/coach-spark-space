@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const STEPS = [
@@ -12,8 +13,8 @@ const STEPS = [
 type Key = typeof STEPS[number]["key"];
 
 export default function SelfCompassion() {
-  const [idx, setIdx] = useState(-1);
-  const [data, setData] = useState<Record<string, string>>({});
+  const [idx, setIdx] = usePersistentState("self-compassion", "idx", -1);
+  const [data, setData] = usePersistentState<Record<string, string>>("self-compassion", "data", {});
 
   if (idx === -1) {
     return (

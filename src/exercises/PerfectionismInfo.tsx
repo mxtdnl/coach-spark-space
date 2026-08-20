@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Link } from "@tanstack/react-router";
 import { Field, IntroGrid, TextArea } from "./_shared";
 
@@ -34,10 +35,10 @@ const LINKED = [
 ];
 
 export default function PerfectionismInfo() {
-  const [a, setA] = useState("");
-  const [b, setB] = useState("");
-  const [c, setC] = useState("");
-  const [d, setD] = useState("");
+  const [a, setA] = usePersistentState("perfectionism-hub", "a", "");
+  const [b, setB] = usePersistentState("perfectionism-hub", "b", "");
+  const [c, setC] = usePersistentState("perfectionism-hub", "c", "");
+  const [d, setD] = usePersistentState("perfectionism-hub", "d", "");
 
   return (
     <div className="space-y-10">

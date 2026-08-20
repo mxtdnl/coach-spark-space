@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const AREAS = [
@@ -23,7 +24,7 @@ type Entry = {
 const blank = (area: string): Entry => ({ area, standard: "", realistic: "", flexible: "", adjusted: "" });
 
 export default function HighStandards() {
-  const [entries, setEntries] = useState<Entry[]>(AREAS.map(blank));
+  const [entries, setEntries] = usePersistentState<Entry[]>("high-standards-check-in", "entries", AREAS.map(blank));
 
   const update = (i: number, patch: Partial<Entry>) => setEntries((arr) => arr.map((e, idx) => (idx === i ? { ...e, ...patch } : e)));
 

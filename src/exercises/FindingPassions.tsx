@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const QUESTIONS = [
@@ -10,10 +11,10 @@ const QUESTIONS = [
 ] as const;
 
 export default function FindingPassions() {
-  const [step, setStep] = useState<"intro" | "reflect" | "actions" | "summary">("intro");
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [action1, setAction1] = useState("");
-  const [action2, setAction2] = useState("");
+  const [step, setStep] = usePersistentState<"intro" | "reflect" | "actions" | "summary">("finding-your-passions", "step", "intro");
+  const [answers, setAnswers] = usePersistentState<Record<string, string>>("finding-your-passions", "answers", {});
+  const [action1, setAction1] = usePersistentState("finding-your-passions", "action1", "");
+  const [action2, setAction2] = usePersistentState("finding-your-passions", "action2", "");
 
   return (
     <div className="space-y-8">

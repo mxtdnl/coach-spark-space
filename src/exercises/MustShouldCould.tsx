@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, TextInput, GhostButton } from "./_shared";
 
 type Bucket = "must" | "should" | "could";
@@ -11,9 +12,9 @@ const BUCKETS: { key: Bucket; label: string; blurb: string }[] = [
 ];
 
 export default function MustShouldCould() {
-  const [period, setPeriod] = useState("");
-  const [draft, setDraft] = useState("");
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [period, setPeriod] = usePersistentState("must-should-could", "period", "");
+  const [draft, setDraft] = usePersistentState("must-should-could", "draft", "");
+  const [tasks, setTasks] = usePersistentState<Task[]>("must-should-could", "tasks", []);
   const [dragId, setDragId] = useState<string | null>(null);
 
   const add = (bucket: Bucket) => {
@@ -91,7 +92,7 @@ export default function MustShouldCould() {
               <p className="text-xs text-muted-foreground mt-1">{b.blurb}</p>
               <div
                 className="mt-2 h-1 rounded-full"
-                style={{ background: "hsl(var(--primary))", opacity: 1 - i * 0.3 }}
+                style={{ background: "var(--primary)", opacity: 1 - i * 0.3 }}
               />
               <ul className="mt-3 space-y-2">
                 {items.map((t) => (

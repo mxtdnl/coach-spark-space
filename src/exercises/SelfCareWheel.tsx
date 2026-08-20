@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 import { DraggableRadar } from "./WheelOfLife";
 
@@ -14,9 +15,9 @@ const CATEGORIES = [
 type Scores = Record<string, number>;
 
 export default function SelfCareWheel() {
-  const [step, setStep] = useState<"intro" | "rate" | "summary">("intro");
-  const [scores, setScores] = useState<Scores>(() => Object.fromEntries(CATEGORIES.map((c) => [c.name, 5])));
-  const [reflections, setReflections] = useState({ balance: "", surprise: "", attention: "", goals: "" });
+  const [step, setStep] = usePersistentState<"intro" | "rate" | "summary">("self-care-wheel", "step", "intro");
+  const [scores, setScores] = usePersistentState<Scores>("self-care-wheel", "scores", () => Object.fromEntries(CATEGORIES.map((c) => [c.name, 5])));
+  const [reflections, setReflections] = usePersistentState("self-care-wheel", "reflections", { balance: "", surprise: "", attention: "", goals: "" });
 
   return (
     <div className="space-y-8">

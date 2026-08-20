@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const CATEGORIES = [
@@ -24,9 +25,9 @@ const REFLECTIONS = [
 ] as const;
 
 export default function WheelOfPower() {
-  const [step, setStep] = useState<"intro" | "map" | "reflect" | "summary">("intro");
-  const [positions, setPositions] = useState<Record<string, number | null>>({});
-  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [step, setStep] = usePersistentState<"intro" | "map" | "reflect" | "summary">("wheel-of-power-and-privilege", "step", "intro");
+  const [positions, setPositions] = usePersistentState<Record<string, number | null>>("wheel-of-power-and-privilege", "positions", {});
+  const [notes, setNotes] = usePersistentState<Record<string, string>>("wheel-of-power-and-privilege", "notes", {});
 
   return (
     <div className="space-y-8">

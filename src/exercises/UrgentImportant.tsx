@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, PrimaryButton, TextInput } from "./_shared";
 
 type Q = "do" | "schedule" | "delegate" | "delete";
@@ -12,8 +13,8 @@ const META: Record<Q, { title: string; sub: string; eg: string; tone: string; ri
 };
 
 export default function UrgentImportant() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [draft, setDraft] = useState("");
+  const [tasks, setTasks] = usePersistentState<Task[]>("urgent-important-matrix", "tasks", []);
+  const [draft, setDraft] = usePersistentState("urgent-important-matrix", "draft", "");
   const [dragId, setDragId] = useState<string | null>(null);
   const [hoverQ, setHoverQ] = useState<Q | "tray" | null>(null);
 

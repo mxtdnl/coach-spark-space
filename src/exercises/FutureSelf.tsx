@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const VISUALS = [
@@ -18,8 +19,8 @@ const MESSAGES = [
 type Notes = Record<string, string>;
 
 export default function FutureSelf() {
-  const [step, setStep] = useState<"intro" | "ground" | "visualize" | "messages" | "summary">("intro");
-  const [notes, setNotes] = useState<Notes>({});
+  const [step, setStep] = usePersistentState<"intro" | "ground" | "visualize" | "messages" | "summary">("future-self", "step", "intro");
+  const [notes, setNotes] = usePersistentState<Notes>("future-self", "notes", {});
   const update = (k: string, v: string) => setNotes((n) => ({ ...n, [k]: v }));
 
   return (

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const QUESTIONS = [
@@ -10,8 +11,8 @@ const QUESTIONS = [
 ] as const;
 
 export default function EndOfYearReview() {
-  const [step, setStep] = useState<"intro" | "reflect" | "summary">("intro");
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [step, setStep] = usePersistentState<"intro" | "reflect" | "summary">("end-of-year-review", "step", "intro");
+  const [answers, setAnswers] = usePersistentState<Record<string, string>>("end-of-year-review", "answers", {});
 
   return (
     <div className="space-y-8">
