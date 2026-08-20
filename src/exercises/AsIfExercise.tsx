@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const SCENARIOS = [
@@ -35,10 +36,10 @@ const SCENARIOS = [
 ];
 
 export default function AsIfExercise() {
-  const [text, setText] = useState("");
-  const [tried, setTried] = useState<string[]>([]);
-  const [current, setCurrent] = useState<string | null>(null);
-  const [note, setNote] = useState("");
+  const [text, setText] = usePersistentState("as-if-exercise", "text", "");
+  const [tried, setTried] = usePersistentState<string[]>("as-if-exercise", "tried", []);
+  const [current, setCurrent] = usePersistentState<string | null>("as-if-exercise", "current", null);
+  const [note, setNote] = usePersistentState("as-if-exercise", "note", "");
 
   const pool = useMemo(() => SCENARIOS.filter((s) => !tried.includes(s)), [tried]);
 

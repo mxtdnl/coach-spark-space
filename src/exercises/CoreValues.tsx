@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { GhostButton, IntroGrid, PrimaryButton, TextInput } from "./_shared";
 
 const VALUES = [
@@ -8,16 +9,16 @@ const VALUES = [
 type Phase = "intro" | "swipe" | "rank" | "action" | "summary";
 
 export default function CoreValues() {
-  const [step, setStep] = useState<Phase>("intro");
+  const [step, setStep] = usePersistentState<Phase>("core-values", "step", "intro");
 
   // Swipe deck
-  const [deck, setDeck] = useState<string[]>(() => [...VALUES].sort(() => Math.random() - 0.5));
-  const [kept, setKept] = useState<string[]>([]);
-  const [custom, setCustom] = useState("");
+  const [deck, setDeck] = usePersistentState<string[]>("core-values", "deck", () => [...VALUES].sort(() => Math.random() - 0.5));
+  const [kept, setKept] = usePersistentState<string[]>("core-values", "kept", []);
+  const [custom, setCustom] = usePersistentState("core-values", "custom", "");
 
   // Ranking podium
   const [podium, setPodium] = useState<(string | null)[]>([null, null, null, null, null]);
-  const [actions, setActions] = useState<Record<string, string>>({});
+  const [actions, setActions] = usePersistentState<Record<string, string>>("core-values", "actions", {});
 
   const top = deck[0];
 

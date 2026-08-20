@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea, TextInput } from "./_shared";
 
 const REFLECTIONS = [
@@ -10,14 +11,14 @@ const REFLECTIONS = [
 const DURATIONS = [3, 5, 10] as const;
 
 export default function IdeaQuickfire() {
-  const [step, setStep] = useState<"intro" | "prompt" | "brainstorm" | "reflect" | "summary">("intro");
-  const [prompt, setPrompt] = useState("");
-  const [ideas, setIdeas] = useState<string[]>([]);
-  const [draft, setDraft] = useState("");
-  const [duration, setDuration] = useState<number>(5);
+  const [step, setStep] = usePersistentState<"intro" | "prompt" | "brainstorm" | "reflect" | "summary">("idea-generation-quickfire", "step", "intro");
+  const [prompt, setPrompt] = usePersistentState("idea-generation-quickfire", "prompt", "");
+  const [ideas, setIdeas] = usePersistentState<string[]>("idea-generation-quickfire", "ideas", []);
+  const [draft, setDraft] = usePersistentState("idea-generation-quickfire", "draft", "");
+  const [duration, setDuration] = usePersistentState<number>("idea-generation-quickfire", "duration", 5);
   const [remaining, setRemaining] = useState<number>(5 * 60);
   const [running, setRunning] = useState(false);
-  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [notes, setNotes] = usePersistentState<Record<string, string>>("idea-generation-quickfire", "notes", {});
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {

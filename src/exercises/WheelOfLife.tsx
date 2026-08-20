@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const DEFAULT_AREAS = ["Finances", "Physical Environment", "Personal Growth", "Health", "Career", "Relationships", "Academics", "Fun & Recreation"] as const;
@@ -11,10 +12,10 @@ const REFLECTIONS = [
 ] as const;
 
 export default function WheelOfLife() {
-  const [step, setStep] = useState<"intro" | "rate" | "summary">("intro");
+  const [step, setStep] = usePersistentState<"intro" | "rate" | "summary">("wheel-of-life", "step", "intro");
   const [areas] = useState<string[]>([...DEFAULT_AREAS]);
-  const [scores, setScores] = useState<Record<string, number>>(() => Object.fromEntries(DEFAULT_AREAS.map((a) => [a, 5])));
-  const [notes, setNotes] = useState<Record<string, string>>({});
+  const [scores, setScores] = usePersistentState<Record<string, number>>("wheel-of-life", "scores", () => Object.fromEntries(DEFAULT_AREAS.map((a) => [a, 5])));
+  const [notes, setNotes] = usePersistentState<Record<string, string>>("wheel-of-life", "notes", {});
 
   return (
     <div className="space-y-8">
@@ -141,20 +142,20 @@ export function DraggableRadar({
           key={g}
           points={categories.map((_, i) => point(i, g).join(",")).join(" ")}
           fill="none"
-          stroke="hsl(var(--border))"
+          stroke="var(--border)"
           strokeWidth={1}
           strokeDasharray={g === 10 ? "0" : "2 3"}
         />
       ))}
       {categories.map((_, i) => {
         const [x, y] = point(i, 10);
-        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="hsl(var(--border))" strokeWidth={1} />;
+        return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="var(--border)" strokeWidth={1} />;
       })}
       <polygon
         points={polygon}
-        fill="hsl(var(--primary))"
+        fill="var(--primary)"
         fillOpacity={0.22}
-        stroke="hsl(var(--primary))"
+        stroke="var(--primary)"
         strokeWidth={2}
         style={{ transition: dragIdx === null ? "all 180ms ease-out" : "none" }}
       />
@@ -182,8 +183,8 @@ export function DraggableRadar({
               cx={x}
               cy={y}
               r={isActive ? 11 : 8}
-              fill="hsl(var(--primary))"
-              stroke="hsl(var(--background))"
+              fill="var(--primary)"
+              stroke="var(--background)"
               strokeWidth={2}
               style={{ pointerEvents: "none", transition: dragIdx === null ? "r 120ms" : "none" }}
             />

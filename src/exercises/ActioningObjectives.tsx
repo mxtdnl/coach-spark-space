@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, TextArea, TextInput, PrimaryButton, GhostButton, Field } from "./_shared";
 
 const VERBS = [
@@ -19,10 +20,10 @@ const newSection = (): Section => ({
 });
 
 export default function ActioningObjectives() {
-  const [step, setStep] = useState(0);
-  const [overall, setOverall] = useState("");
-  const [sections, setSections] = useState<Section[]>([newSection()]);
-  const [rehearsed, setRehearsed] = useState<Record<string, boolean>>({});
+  const [step, setStep] = usePersistentState("actioning-and-objectives", "step", 0);
+  const [overall, setOverall] = usePersistentState("actioning-and-objectives", "overall", "");
+  const [sections, setSections] = usePersistentState<Section[]>("actioning-and-objectives", "sections", [newSection()]);
+  const [rehearsed, setRehearsed] = usePersistentState<Record<string, boolean>>("actioning-and-objectives", "rehearsed", {});
 
   const updateSection = (id: string, patch: Partial<Section>) =>
     setSections((s) => s.map((x) => (x.id === id ? { ...x, ...patch } : x)));
@@ -226,7 +227,9 @@ function SectionActioning({
   onSetVerb: (pid: string, verb: string) => void;
   onRemovePoint: (pid: string) => void;
 }) {
-  const [draft, setDraft] = useState("");
+  const [draft, setDraft] = usePersistentState("actioning-and-objectives", "draft", "");
+  // Not persisted: this component is rendered once per section, so a shared
+  // storage key would make every section's open point track the same value.
   const [openPoint, setOpenPoint] = useState<string | null>(null);
 
   return (

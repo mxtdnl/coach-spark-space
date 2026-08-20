@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { GhostButton, InfoCard, IntroGrid, PrimaryButton, TextArea, TextInput } from "./_shared";
 
 type QType = "scale" | "text" | "number";
@@ -33,13 +34,13 @@ const CHECKLIST = [
 ];
 
 export default function TeamAlignment() {
-  const [step, setStep] = useState<"intro" | "setup" | "round" | "themes" | "closing" | "checklist" | "summary">("intro");
-  const [members, setMembers] = useState<string[]>(["", "", "", ""]);
-  const [goals, setGoals] = useState<string[]>([]);
-  const [qIdx, setQIdx] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
-  const [closing, setClosing] = useState<Record<string, string>>({});
-  const [ticked, setTicked] = useState<string[]>([]);
+  const [step, setStep] = usePersistentState<"intro" | "setup" | "round" | "themes" | "closing" | "checklist" | "summary">("team-alignment", "step", "intro");
+  const [members, setMembers] = usePersistentState<string[]>("team-alignment", "members", ["", "", "", ""]);
+  const [goals, setGoals] = usePersistentState<string[]>("team-alignment", "goals", []);
+  const [qIdx, setQIdx] = usePersistentState("team-alignment", "qIdx", 0);
+  const [answers, setAnswers] = usePersistentState<Record<string, string>>("team-alignment", "answers", {});
+  const [closing, setClosing] = usePersistentState<Record<string, string>>("team-alignment", "closing", {});
+  const [ticked, setTicked] = usePersistentState<string[]>("team-alignment", "ticked", []);
 
   const names = members.map((m) => m.trim()).filter(Boolean);
   const q = QUESTIONS[qIdx];
@@ -221,7 +222,7 @@ export default function TeamAlignment() {
           <div className="space-y-2">
             {CHECKLIST.map((c) => (
               <label key={c} className={`flex items-center gap-3 rounded-lg border p-4 text-sm cursor-pointer transition ${ticked.includes(c) ? "border-primary bg-primary/5" : "border-border bg-card hover:bg-secondary"}`}>
-                <input type="checkbox" checked={ticked.includes(c)} onChange={() => setTicked((s) => s.includes(c) ? s.filter((x) => x !== c) : [...s, c])} className="accent-[hsl(var(--primary))]" />
+                <input type="checkbox" checked={ticked.includes(c)} onChange={() => setTicked((s) => s.includes(c) ? s.filter((x) => x !== c) : [...s, c])} className="accent-[var(--primary)]" />
                 <span>{c}</span>
               </label>
             ))}

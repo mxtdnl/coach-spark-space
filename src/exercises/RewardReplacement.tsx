@@ -1,16 +1,17 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const STEPS = ["Identify", "Replace", "Implement", "Track"] as const;
 
 export default function RewardReplacement() {
-  const [step, setStep] = useState(0);
-  const [behavior, setBehavior] = useState("");
-  const [reward, setReward] = useState("");
-  const [cost, setCost] = useState("");
-  const [alternative, setAlternative] = useState("");
-  const [trigger, setTrigger] = useState("");
-  const [tracking, setTracking] = useState("");
+  const [step, setStep] = usePersistentState("reward-replacement", "step", 0);
+  const [behavior, setBehavior] = usePersistentState("reward-replacement", "behavior", "");
+  const [reward, setReward] = usePersistentState("reward-replacement", "reward", "");
+  const [cost, setCost] = usePersistentState("reward-replacement", "cost", "");
+  const [alternative, setAlternative] = usePersistentState("reward-replacement", "alternative", "");
+  const [trigger, setTrigger] = usePersistentState("reward-replacement", "trigger", "");
+  const [tracking, setTracking] = usePersistentState("reward-replacement", "tracking", "");
 
   return (
     <div className="space-y-8">

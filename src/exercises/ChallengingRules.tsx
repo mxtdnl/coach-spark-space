@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 export default function ChallengingRules() {
-  const [step, setStep] = useState<"intro" | "identify" | "experiment" | "results" | "reflect" | "summary">("intro");
-  const [data, setData] = useState({
+  const [step, setStep] = usePersistentState<"intro" | "identify" | "experiment" | "results" | "reflect" | "summary">("challenging-rules-and-assumptions", "step", "intro");
+  const [data, setData] = usePersistentState("challenging-rules-and-assumptions", "data", {
     belief: "", origin: "", unreasonable: "", consequences: "",
     prediction: "", predictionChance: 50,
     experiment: "",
@@ -52,7 +53,7 @@ export default function ChallengingRules() {
           </Field>
           <div>
             <label className="text-sm font-medium">How likely is your prediction? <span className="ml-2 tabular-nums text-primary font-semibold">{data.predictionChance}%</span></label>
-            <input type="range" min={0} max={100} value={data.predictionChance} onChange={(e) => u({ predictionChance: Number(e.target.value) })} className="w-full mt-2 accent-[hsl(var(--primary))]" />
+            <input type="range" min={0} max={100} value={data.predictionChance} onChange={(e) => u({ predictionChance: Number(e.target.value) })} className="w-full mt-2 accent-[var(--primary)]" />
           </div>
           <Field label="What's a small experiment to test it?" hint="e.g. Arrive 10 minutes early to class instead of 30.">
             <TextArea rows={3} value={data.experiment} onChange={(e) => u({ experiment: e.target.value })} />
@@ -75,7 +76,7 @@ export default function ChallengingRules() {
               <div key={k} className="rounded-xl border border-border bg-card p-4">
                 <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">{["Before", "During", "After"][i]}</p>
                 <p className="text-3xl font-semibold mt-1 tabular-nums">{data[k]}<span className="text-sm text-muted-foreground">/10</span></p>
-                <input type="range" min={1} max={10} value={data[k]} onChange={(e) => u({ [k]: Number(e.target.value) } as any)} className="w-full mt-2 accent-[hsl(var(--primary))]" />
+                <input type="range" min={1} max={10} value={data[k]} onChange={(e) => u({ [k]: Number(e.target.value) } as any)} className="w-full mt-2 accent-[var(--primary)]" />
               </div>
             ))}
           </div>

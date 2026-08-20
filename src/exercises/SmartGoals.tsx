@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, IntroGrid, TextArea } from "./_shared";
 
 const PARTS = [
@@ -12,10 +13,10 @@ const PARTS = [
 type K = typeof PARTS[number]["key"];
 
 export default function SmartGoals() {
-  const [vals, setVals] = useState<Record<K, string>>({ specific: "", measurable: "", achievable: "", relevant: "", timebound: "" });
-  const [combined, setCombined] = useState("");
-  const [confidence, setConfidence] = useState(70);
-  const [boost, setBoost] = useState("");
+  const [vals, setVals] = usePersistentState<Record<K, string>>("smart-goals", "vals", { specific: "", measurable: "", achievable: "", relevant: "", timebound: "" });
+  const [combined, setCombined] = usePersistentState("smart-goals", "combined", "");
+  const [confidence, setConfidence] = usePersistentState("smart-goals", "confidence", 70);
+  const [boost, setBoost] = usePersistentState("smart-goals", "boost", "");
 
   return (
     <div className="space-y-8">

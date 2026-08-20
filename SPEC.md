@@ -121,10 +121,11 @@ exercise into one shape, because the exercises are genuinely different shapes.
 
 ### P10 — Privacy by architecture
 
-Student answers live in React state in the browser tab and nowhere else. No network calls,
-no `localStorage`, no telemetry. Closing the tab discards the work; exporting is the only way
-out. This is a real trade-off (§9.1) — the current build resolves it in favour of privacy and
-zero data-protection burden.
+Student answers never leave the student's own device. No network calls, no server-side
+storage, no telemetry. Work in progress is autosaved to `localStorage` under a per-exercise
+namespace (§5.1) so a refresh doesn't cost a session, and the student can delete it at any
+time — per exercise or all at once. Exporting is the only way work leaves the browser, and
+the student initiates it.
 
 ---
 
@@ -138,7 +139,7 @@ zero data-protection burden.
 | Routing | TanStack Router 1.x | `src/routes/`, generated `routeTree.gen.ts` |
 | Build | Vite 7 via `@lovable.dev/vite-tanstack-config` | Wrapper preconfigures the plugin set |
 | Styling | Tailwind CSS 4 (`@tailwindcss/vite`) + `tw-animate-css` | CSS-first config in `src/styles.css` |
-| Component library | shadcn/ui (new-york, slate) vendored into `src/components/ui/` | **Currently unused by the app** — see §9.4 |
+| Component library | shadcn/ui (new-york, slate) vendored into `src/components/ui/` | **Entirely unused by the app** — 46 components, 0 imports; see §9.4 |
 | Data fetching | TanStack Query 5 | Provider mounted in `__root.tsx`; no queries yet |
 | Package manager | Bun (`bun.lock`, `bunfig.toml`); npm on CI | `minimumReleaseAge = 86400` supply-chain guard |
 | Lint/format | ESLint 9 flat config + Prettier | `npm run lint`, `npm run format` |
@@ -175,6 +176,8 @@ src/
 ├── server.ts                SSR entry wrapper; normalises h3-swallowed 500s
 ├── lib/
 │   ├── exercises.ts         THE CATALOGUE — single source of truth
+│   ├── exercise-storage.ts  Per-exercise localStorage autosave + clear
+│   ├── theme.ts             light / dark / system theme, pre-paint init script
 │   ├── utils.ts             cn() helper (clsx + tailwind-merge)
 │   ├── config.server.ts     Server-only env access pattern (unused stub)
 │   ├── error-capture.ts     Captures last SSR error for the error page
@@ -182,8 +185,10 @@ src/
 │   └── api/example.functions.ts  createServerFn example (unused stub)
 ├── exercises/
 │   ├── _shared.tsx          Shared UI primitives
-│   └── <36 exercise components>.tsx
-├── components/ui/           shadcn/ui primitives (vendored, currently unused)
+│   └── <37 exercise components>.tsx
+├── components/
+│   ├── ThemeToggle.tsx      Light / system / dark control
+│   └── ui/                  shadcn/ui primitives (vendored, entirely unused)
 ├── hooks/use-mobile.tsx
 └── styles.css               Design tokens + Tailwind entry
 ```
@@ -204,7 +209,7 @@ export type Exercise = {
   component: ComponentType;  // Default-exported exercise component
 };
 
-export const EXERCISES: Exercise[] = [ /* 36 entries */ ];
+export const EXERCISES: Exercise[] = [ /* 37 entries */ ];
 export const getExercise  = (slug: string) => EXERCISES.find(e => e.slug === slug);
 export const getCategories = () => Array.from(new Set(EXERCISES.map(e => e.category))).sort();
 ```
@@ -287,9 +292,37 @@ Every exercise is a **local, ephemeral state machine**:
   skip a phase.
 - Derived values (rankings, tallies, groupings, valid-task filters) use `useMemo`.
 
-There is **no** global store, **no** persistence layer, **no** URL state, and **no**
-`localStorage` usage anywhere in the codebase. Refreshing the page loses the work in
-progress. See §9.1.
+There is **no** global store and **no** URL state.
+
+### 5.1 Persistence (`src/lib/exercise-storage.ts`)
+
+Anything the student types or chooses is autosaved to `localStorage` on their own device.
+`usePersistentState(slug, field, initial)` is a drop-in replacement for `useState`:
+
+```ts
+const [notes, setNotes] = usePersistentState<Record<string, string>>(
+  "wheel-of-life", "notes", {},
+);
+```
+
+Contract:
+
+| Concern | Behaviour |
+| --- | --- |
+| **Key shape** | `sdc-vrl:v1:<slug>:<field>` — namespaced per exercise, so exercises cannot read each other's answers. `VERSION` is bumped if a stored shape changes incompatibly. |
+| **SSR / prerender** | The first render always returns the initial value; the stored value is applied in a mount effect. Reading storage during render would desync the prerendered HTML from the client. |
+| **No spurious saves** | A write happens only when the serialised value actually differs from what is stored (or from the untouched default). Opening an exercise and reading it never creates a save. |
+| **Sets** | `Set` values are serialised through an explicit `{ __t: "Set", v: [...] }` envelope, since some exercises hold answers in a `Set`. |
+| **Failure** | Private modes, disabled storage, and quota errors are caught: the exercise keeps working in memory, it just stops being restorable. |
+| **Clearing** | Per exercise from the banner on the exercise page, or all at once from the library. Clearing removes the keys and remounts the component (via a `key` bump) so in-memory state resets too. |
+
+**What is *not* persisted:** transient UI and timer state — drag targets, hover zones,
+card-flip state, quiz progress, and running countdowns. `_shared`-level subcomponents that
+are rendered more than once per page (e.g. `SectionActioning`) must also stay on plain
+`useState`, since a single storage key would be shared across every instance.
+
+Two surfaces expose the saved state: an "In progress" badge on library cards, and a banner on
+the exercise page stating that answers are device-local, with the clear control.
 
 ---
 
@@ -330,7 +363,7 @@ Every exercise component:
 | **Reference hub** | Content-led with reflective inputs and cross-links | Perfectionism: A Practical Guide (mindsets, busters, affirmations, personal script, 6 outbound links) |
 | **Journaling** | Prompted long-form writing — deliberately un-gamified (P1) | Future Self, End-of-Year Review, Finding Passions, As-If, Walk and Talk |
 
-### 6.3 Catalogue (36 exercises, 13 categories)
+### 6.3 Catalogue (37 exercises, 15 categories)
 
 Categories in use: Beliefs & Thinking, Calming Techniques, Communication, Creativity,
 Decision-Making, Habits & Behaviour, Prioritization, Productivity, Public Speaking,
@@ -376,7 +409,7 @@ Purpose & Direction, Reflection, Self-Awareness, Stress & Anxiety, Teamwork, Wel
 | `enhanced-to-do-list` | Enhanced To-Do List | Productivity | 12 | single view: priority/estimate/actual table | ✅ |
 | `actioning-and-objectives` | Actioning and Objectives | Public Speaking | 20 | numbered steps: overall objective → sections → points → verbs → rehearse | ✅ |
 
-**Export column:** ✅ = a "Print / Save PDF" control exists today; ❌ = none. 26 of 36 have
+**Export column:** ✅ = a "Print / Save PDF" control exists today; ❌ = none. 27 of 37 have
 one; 10 do not. Box Breathing legitimately produces no artefact; the other nine are gaps
 (§7.3).
 
@@ -498,15 +531,24 @@ exercise hand-writes its summary layout.
 
 ### 8.1 Privacy posture
 
-Because no student input is transmitted or persisted:
+No student input is ever transmitted. Answers are held in the browser and autosaved to
+`localStorage` on the student's own device (§5.1), so:
 
-- there is no personal data at rest and no data-subject request surface;
+- the operator holds no personal data — nothing reaches a server, so there is no
+  data-subject request surface and no retention policy to run;
 - the site can be served as static files with no backend and no database;
-- a coach can use it with a student without any consent or retention conversation.
+- the data that does exist at rest sits on the student's own machine, under their control,
+  and is deletable from the UI at any time (per exercise, or all at once).
+
+The one residual risk is a **shared device**: on a lab or library machine, the next person
+using the same browser profile can open the same exercise and see the previous student's
+answers. The saved-work banner names where answers live, and §9.1 tracks the stronger
+mitigations. Private/incognito windows are unaffected either way — storage there is
+discarded when the window closes, and the exercises degrade gracefully if storage is blocked.
 
 The stub server pieces (`config.server.ts`, `api/example.functions.ts`) exist as template
-scaffolding only; neither is imported by the app. Introducing any persistence (§9.1) changes
-this posture materially and should be an explicit, documented decision.
+scaffolding only; neither is imported by the app. Introducing *server-side* persistence
+would change this posture materially and should be an explicit, documented decision.
 
 ### 8.2 Accessibility — current state and requirements
 
@@ -529,8 +571,11 @@ Gaps to close (specification for new and revised work):
   opacity, Ikigai zones all currently lean on colour).
 - **A6** — Contrast: hue-derived inline colours (e.g. `hsl(${hue} 60% 25%)` on card titles)
   should be checked against their backgrounds in both themes.
-- **A7** — The dark theme is defined in tokens but the app never sets `.dark`; either wire a
-  theme toggle (respecting `prefers-color-scheme`) or remove the dead palette.
+- **A7** — ~~The dark theme is defined in tokens but the app never sets `.dark`.~~
+  **Done.** `src/lib/theme.ts` + `ThemeToggle` give light / dark / system; the choice is
+  applied by an inline head script before first paint, and `color-scheme` is set so native
+  controls follow. Remaining check: the hue-derived card colours in Skills & Mindset Cards
+  keep their own light surfaces in dark mode — deliberate, but worth a contrast pass (A6).
 
 ### 8.3 Content and safeguarding
 
@@ -548,19 +593,23 @@ distress. Specification for the hub:
 
 ## 9. Known gaps and roadmap
 
-### 9.1 No persistence (highest-impact gap)
+### 9.1 Persistence — resolved for the single-device case
 
-A student who refreshes, closes a tab, or follows a cross-link mid-exercise loses everything.
-A 45-minute Team Alignment session is one accidental navigation away from total loss.
+Losing a 45-minute Team Alignment session to an accidental navigation was the highest-impact
+gap in the build. **Resolved:** per-exercise `localStorage` autosave with per-exercise and
+global clear controls (§5.1), which keeps the no-backend, nothing-leaves-the-device posture.
 
-Recommended resolution, in order of increasing cost:
+Still open, in increasing order of cost:
 
-1. **`localStorage` autosave, per slug**, with an explicit "Clear my answers" control and a
-   visible "saved on this device" note. Preserves the no-backend posture; keeps data on the
-   student's machine. *This is the recommended next step.*
-2. **`beforeunload` warning** when an exercise has unsaved input.
-3. **Import/export of a session file** (JSON download + upload) so work can move between
-   devices or be handed to a coach.
+1. **Import/export of a session file** (JSON download + upload) so work can move between
+   devices, or be handed to a coach deliberately.
+2. **Storage housekeeping** — nothing currently expires. A student who works twenty exercises
+   keeps twenty saves indefinitely. Consider surfacing a "last worked on" date and an age-based
+   prompt rather than silent deletion.
+3. **Shared-device caution.** On a lab or library machine the next user of the same browser
+   profile can read the previous student's answers. The banner says answers are saved on the
+   device, but a coach-facing note about shared machines — or an explicit "don't save on this
+   device" toggle — would be a genuine improvement.
 4. Accounts and server-side storage — only if the hub's remit changes to include coach
    visibility of student work (§1.3), and only with an explicit data-protection review.
 
@@ -579,24 +628,86 @@ nine missing export buttons (E1) → secondary formats (E6).
 
 ### 9.4 Housekeeping
 
-- **shadcn/ui is entirely unused.** 46 components under `src/components/ui/` and the
-  dependencies behind them (`recharts`, `react-hook-form`, `sonner`, `date-fns`,
-  `embla-carousel-react`, `lucide-react`, `input-otp`, `vaul`, `cmdk`, `react-day-picker`,
-  `react-resizable-panels`) are not imported by any route or exercise. Either adopt them as
-  the component layer or prune them — the current state is dead weight in the bundle graph
-  and a misleading signal to contributors.
+- **shadcn/ui is entirely unused** — see §9.5 for the full analysis and recommendation.
 - **TanStack Query** is mounted but performs no queries; keep only if server data is planned.
 - **Template stubs** (`lib/api/example.functions.ts`, `lib/config.server.ts`) are unreferenced.
 - **`CognitiveDistortions.tsx`** passes an expression (`step === "quiz"`) as a `useMemo`
   dependency to reshuffle the deck — it works but violates the rules-of-hooks convention and
   will trip lint tooling; it should key off `step` directly.
-- **The catalogue's `README.md`** still describes the project as a single-exercise request and
-  points at the Lovable app URL. It should be rewritten to describe the resource hub, its
-  audience, and how to add an exercise.
-- **The home page footer** reads "Send a PDF to add it to the library" — an internal workflow
-  note that should become a real contribution route or be removed.
+- **`README.md`** ~~still describes the project as a single-exercise request~~ — **done**,
+  rewritten around the hub, its audience, and how to add an exercise.
+- **The home page footer** ~~reads "Send a PDF to add it to the library"~~ — **done**, the
+  internal workflow note is removed.
+- **`hsl(var(--token))` was invalid everywhere it appeared** (24 occurrences across 11
+  exercises). The design tokens hold oklch values, so wrapping them in `hsl()` produced an
+  invalid colour: radar grids and spokes rendered as nothing, handles as black, and range
+  and checkbox accents fell back to the browser default. **Fixed** to `var(--token)` — this
+  was a light-mode bug too, dark mode just made it obvious.
 
-### 9.5 Testing
+### 9.5 The unused UI layer — analysis and recommendation
+
+**The facts.**
+
+| Measure | Value |
+| --- | --- |
+| Vendored shadcn/ui components in `src/components/ui/` | 46 files, ~4,360 lines |
+| Imports of those components from any route or exercise | **0** |
+| `package.json` dependencies reachable *only* from `src/components/ui/` | 24 `@radix-ui/*` packages plus `recharts`, `react-hook-form`, `@hookform/resolvers`, `sonner`, `date-fns`, `embla-carousel-react`, `lucide-react`, `input-otp`, `vaul`, `cmdk`, `react-day-picker`, `react-resizable-panels`, `class-variance-authority` |
+| Disk footprint of those packages in `node_modules` | ≈ 92 MB of ~355 MB (`lucide-react` 45 MB, `date-fns` 28 MB, `recharts` 5.4 MB, `@radix-ui/*` 5.1 MB, `react-day-picker` 5.2 MB) |
+| Bytes of that code in the shipped client bundle | **0** — the whole `assets/` output is 712 KB and contains no Radix, shadcn, or Recharts code |
+| Share of the repo's non-prettier lint warnings coming from these files | 6 of 8 |
+
+**What this does and doesn't cost.** It does *not* cost the student anything: Vite tree-shakes
+unimported modules, so none of it ships. What it costs is everything around the build —
+install and CI time on every run, ~92 MB of disk, 24+ extra packages of supply-chain surface
+that must be audited and patched (the repo already carries a `seroval` override and a 24-hour
+`minimumReleaseAge` guard, so this is a live concern here), lint noise that hides real
+warnings, and — the biggest one — a misleading signal. A contributor opening
+`src/components/ui/` reasonably concludes that shadcn is this project's component layer and
+starts writing `<Card>`/`<Button>`/`<Dialog>` markup, while all 37 existing exercises compose
+the seven primitives in `src/exercises/_shared.tsx`. That divergence would be much more
+expensive to unpick later than it is to prevent now.
+
+**Why it exists.** It is Lovable scaffolding: `components.json` and the whole `ui/` directory
+come from the `tanstack_start_ts` template, not from a decision made for this project.
+
+**The three options.**
+
+1. **Adopt it.** Rebuild `_shared.tsx` on top of shadcn primitives and use them in new
+   exercises. Gains accessible behaviour for free — Radix handles focus traps, keyboard
+   navigation, and ARIA wiring that the hand-rolled primitives don't (directly relevant to
+   the A1–A5 gaps in §8.2). Costs a migration across 37 exercises to avoid a two-system split,
+   and buys components most of these exercises don't need (menubar, carousel, OTP input,
+   date picker, sidebar, resizable panels).
+2. **Prune it.** Delete `src/components/ui/`, `components.json`, and the dependencies reachable
+   only from it. Smallest, fastest, most honest reflection of how the app is actually built.
+   Risk: re-adding a component later means `npx shadcn add <name>` — which is a one-line
+   operation, and the versions come back current rather than frozen.
+3. **Prune selectively** — keep the handful worth adopting (`dialog`, `tooltip`,
+   `radio-group`, `slider`, `checkbox`, `select`), drop the other 40 and their dependencies.
+
+**Recommendation: option 3, in two steps.**
+
+First, delete the components nothing plausibly needs and the dependencies that go with them:
+`carousel` (+`embla-carousel-react`), `chart` (+`recharts` — the exercises draw their own SVG),
+`calendar` (+`react-day-picker`, `date-fns`), `input-otp` (+`input-otp`), `menubar`,
+`navigation-menu`, `context-menu`, `sidebar`, `resizable` (+`react-resizable-panels`),
+`drawer` (+`vaul`), `command` (+`cmdk`), `form` (+`react-hook-form`, `@hookform/resolvers`),
+`sonner` (+`sonner`), `pagination`, `breadcrumb`, `input-otp`, `aspect-ratio`, `table`,
+`menubar`. That removes the great majority of the 92 MB and most of the supply-chain surface
+without foreclosing anything.
+
+Second, keep the small accessible set above and actually use it where it closes a real gap —
+specifically `slider` and `radio-group`, which would give the radar exercises and the 1–5
+scales the keyboard-operable equivalents that A1/A2 call for. Keeping components that are
+used is not dead code; keeping 46 that aren't is.
+
+Whichever option is taken, record it: if the answer is "prune", `components.json` should go
+with it so `npx shadcn add` doesn't silently reintroduce the directory; if the answer is
+"adopt", `_shared.tsx` should be re-expressed in terms of shadcn primitives so there is one
+component layer rather than two.
+
+### 9.6 Testing
 
 There is no test tooling in the repository. Minimum useful coverage for a build of this shape:
 
@@ -616,14 +727,20 @@ There is no test tooling in the repository. Minimum useful coverage for a build 
 3. **Put content in module-level consts**, not inline JSX.
 4. **Open with `IntroGrid`** (What / Why / How).
 5. **Use `_shared.tsx` primitives** for fields, buttons, and cards; use design tokens for
-   colour; reserve custom colour for semantic accents.
-6. **End with a summary step** that omits empty answers and offers export.
-7. **Register it in `src/lib/exercises.ts`** — slug (kebab-case, stable, never renamed once
+   colour (`var(--primary)`, never `hsl(var(--primary))` — the tokens are oklch values);
+   reserve custom colour for semantic accents, and check it in both themes.
+6. **Persist the student's work** with `usePersistentState(slug, field, initial)` from
+   `@/lib/exercise-storage` in place of `useState`. Keep transient UI and timer state on
+   plain `useState`, and never persist state that lives in a subcomponent rendered more than
+   once (§5.1).
+7. **End with a summary step** that omits empty answers and offers export.
+8. **Register it in `src/lib/exercises.ts`** — slug (kebab-case, stable, never renamed once
    shared), title, one-sentence outcome-focused description, category (reuse an existing one
    unless genuinely new), lowercase tags, honest minute estimate, component.
-8. **Cross-link** to related exercises by slug where relevant (P7).
-9. **Check keyboard and mobile paths** for any drag interaction (A1).
-10. Run `npm run lint` and `npm run format`.
+9. **Cross-link** to related exercises by slug where relevant (P7).
+10. **Check keyboard and mobile paths** for any drag interaction (A1), and check the exercise
+    in both light and dark themes.
+11. Run `npm run lint`.
 
 No route needs to be added; the `/exercise/$slug` route and the home page pick it up from the
 catalogue automatically.

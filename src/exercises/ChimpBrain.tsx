@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const STEPS = [
@@ -11,8 +12,8 @@ const STEPS = [
 ] as const;
 
 export default function ChimpBrain() {
-  const [idx, setIdx] = useState(-1);
-  const [data, setData] = useState<Record<string, string>>({});
+  const [idx, setIdx] = usePersistentState("chimp-brain", "idx", -1);
+  const [data, setData] = usePersistentState<Record<string, string>>("chimp-brain", "data", {});
 
   if (idx === -1) {
     return (

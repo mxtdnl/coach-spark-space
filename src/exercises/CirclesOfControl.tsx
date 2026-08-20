@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea, TextInput } from "./_shared";
 
 type Zone = "unsorted" | "control" | "influence" | "concern";
@@ -16,12 +17,12 @@ const CY = 200;
 const R = { control: 70, influence: 130, concern: 190 } as const;
 
 export default function CirclesOfControl() {
-  const [step, setStep] = useState<"intro" | "problem" | "brainstorm" | "sort" | "action" | "summary">("intro");
-  const [problem, setProblem] = useState("");
-  const [items, setItems] = useState<Item[]>([]);
-  const [draft, setDraft] = useState("");
-  const [action, setAction] = useState("");
-  const [letGo, setLetGo] = useState("");
+  const [step, setStep] = usePersistentState<"intro" | "problem" | "brainstorm" | "sort" | "action" | "summary">("circles-of-control", "step", "intro");
+  const [problem, setProblem] = usePersistentState("circles-of-control", "problem", "");
+  const [items, setItems] = usePersistentState<Item[]>("circles-of-control", "items", []);
+  const [draft, setDraft] = usePersistentState("circles-of-control", "draft", "");
+  const [action, setAction] = usePersistentState("circles-of-control", "action", "");
+  const [letGo, setLetGo] = usePersistentState("circles-of-control", "letGo", "");
   const [dragId, setDragId] = useState<string | null>(null);
   const [hoverZone, setHoverZone] = useState<Zone | null>(null);
 

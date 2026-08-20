@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
@@ -18,9 +19,9 @@ const EXAMPLE_TASKS = [
 type Step = "what" | "tasks" | "compare" | "results";
 
 export default function PrioritizationMatrix() {
-  const [step, setStep] = useState<Step>("what");
-  const [tasks, setTasks] = useState<string[]>(["", "", "", "", "", ""]);
-  const [choices, setChoices] = useState<Record<string, number>>({});
+  const [step, setStep] = usePersistentState<Step>("prioritization-matrix", "step", "what");
+  const [tasks, setTasks] = usePersistentState<string[]>("prioritization-matrix", "tasks", ["", "", "", "", "", ""]);
+  const [choices, setChoices] = usePersistentState<Record<string, number>>("prioritization-matrix", "choices", {});
 
   const validTasks = tasks.map((t) => t.trim()).filter(Boolean);
   const n = validTasks.length;

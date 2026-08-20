@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { IntroGrid, PrimaryButton, TextArea, TextInput } from "./_shared";
 
 const CATEGORIES: { name: string; items: string[] }[] = [
@@ -47,11 +48,11 @@ const CATEGORIES: { name: string; items: string[] }[] = [
 ];
 
 export default function RulesAndAssumptions() {
-  const [step, setStep] = useState<"intro" | "check" | "custom" | "behaviour" | "summary">("intro");
-  const [selected, setSelected] = useState<Record<string, boolean>>({});
-  const [customRules, setCustomRules] = useState<string[]>(["", "", ""]);
+  const [step, setStep] = usePersistentState<"intro" | "check" | "custom" | "behaviour" | "summary">("rules-and-assumptions-check", "step", "intro");
+  const [selected, setSelected] = usePersistentState<Record<string, boolean>>("rules-and-assumptions-check", "selected", {});
+  const [customRules, setCustomRules] = usePersistentState<string[]>("rules-and-assumptions-check", "customRules", ["", "", ""]);
   const [customAssumptions, setCustomAssumptions] = useState<Array<{ ifPart: string; then: string }>>([{ ifPart: "", then: "" }]);
-  const [behaviour, setBehaviour] = useState("");
+  const [behaviour, setBehaviour] = usePersistentState("rules-and-assumptions-check", "behaviour", "");
 
   const toggle = (s: string) => setSelected((p) => ({ ...p, [s]: !p[s] }));
   const selectedItems = Object.entries(selected).filter(([, v]) => v).map(([k]) => k);
@@ -83,7 +84,7 @@ export default function RulesAndAssumptions() {
                   {cat.items.map((item) => (
                     <li key={item}>
                       <label className="flex items-start gap-2 text-sm cursor-pointer">
-                        <input type="checkbox" checked={!!selected[item]} onChange={() => toggle(item)} className="mt-0.5 accent-[hsl(var(--primary))]" />
+                        <input type="checkbox" checked={!!selected[item]} onChange={() => toggle(item)} className="mt-0.5 accent-[var(--primary)]" />
                         <span>{item}</span>
                       </label>
                     </li>

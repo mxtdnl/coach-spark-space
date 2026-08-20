@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { Field, GhostButton, IntroGrid, PrimaryButton, TextArea, TextInput } from "./_shared";
 
 const CATEGORIES = [
@@ -10,10 +11,10 @@ const CATEGORIES = [
 ] as const;
 
 export default function ProcrastinationChecklist() {
-  const [step, setStep] = useState<"intro" | "check" | "plan" | "summary">("intro");
-  const [checked, setChecked] = useState<Set<string>>(new Set());
-  const [extras, setExtras] = useState<Record<string, string>>({});
-  const [plan, setPlan] = useState("");
+  const [step, setStep] = usePersistentState<"intro" | "check" | "plan" | "summary">("procrastination-checklist", "step", "intro");
+  const [checked, setChecked] = usePersistentState<Set<string>>("procrastination-checklist", "checked", new Set());
+  const [extras, setExtras] = usePersistentState<Record<string, string>>("procrastination-checklist", "extras", {});
+  const [plan, setPlan] = usePersistentState("procrastination-checklist", "plan", "");
 
   const toggle = (item: string) => {
     const next = new Set(checked);
@@ -55,7 +56,7 @@ export default function ProcrastinationChecklist() {
                     const on = checked.has(id);
                     return (
                       <label key={i} className="flex items-start gap-2 text-sm cursor-pointer">
-                        <input type="checkbox" checked={on} onChange={() => toggle(id)} className="mt-1 accent-[hsl(var(--primary))]" />
+                        <input type="checkbox" checked={on} onChange={() => toggle(id)} className="mt-1 accent-[var(--primary)]" />
                         <span>{i}</span>
                       </label>
                     );

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { usePersistentState } from "@/lib/exercise-storage";
 import { GhostButton, IntroGrid, PrimaryButton, TextArea } from "./_shared";
 
 const DISTORTIONS = [
@@ -17,13 +18,13 @@ const DISTORTIONS = [
 type Phase = "intro" | "quiz" | "situation" | "identify" | "challenge" | "reframe" | "summary";
 
 export default function CognitiveDistortions() {
-  const [step, setStep] = useState<Phase>("intro");
-  const [situation, setSituation] = useState("");
-  const [thought, setThought] = useState("");
-  const [selected, setSelected] = useState<Record<string, boolean>>({});
-  const [facts, setFacts] = useState("");
-  const [friend, setFriend] = useState("");
-  const [reframe, setReframe] = useState("");
+  const [step, setStep] = usePersistentState<Phase>("challenging-cognitive-distortions", "step", "intro");
+  const [situation, setSituation] = usePersistentState("challenging-cognitive-distortions", "situation", "");
+  const [thought, setThought] = usePersistentState("challenging-cognitive-distortions", "thought", "");
+  const [selected, setSelected] = usePersistentState<Record<string, boolean>>("challenging-cognitive-distortions", "selected", {});
+  const [facts, setFacts] = usePersistentState("challenging-cognitive-distortions", "facts", "");
+  const [friend, setFriend] = usePersistentState("challenging-cognitive-distortions", "friend", "");
+  const [reframe, setReframe] = usePersistentState("challenging-cognitive-distortions", "reframe", "");
 
   // Quiz / swipe-deck warm-up
   const deck = useMemo(() => {
