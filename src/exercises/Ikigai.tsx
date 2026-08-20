@@ -6,10 +6,10 @@ type Zone = "love" | "good" | "world" | "paid" | "ikigai";
 type Chip = { id: string; text: string; zone: Zone };
 
 const ZONES: Record<Zone, { label: string; sub: string; hint: string; color: string }> = {
-  love: { label: "Love", sub: "Passion", hint: "Activities that make you feel alive.", color: "#ef4444" },
-  good: { label: "Good at", sub: "Vocation", hint: "Your talents and natural strengths.", color: "#3b82f6" },
-  world: { label: "World needs", sub: "Mission", hint: "How you make a positive impact.", color: "#10b981" },
-  paid: { label: "Paid for", sub: "Profession", hint: "Where your skills meet a market.", color: "#f59e0b" },
+  love: { label: "Love", sub: "Passion", hint: "Activities that make you feel alive.", color: "var(--ink-red)" },
+  good: { label: "Good at", sub: "Vocation", hint: "Your talents and natural strengths.", color: "var(--ink-purple)" },
+  world: { label: "World needs", sub: "Mission", hint: "How you make a positive impact.", color: "var(--ink-brown)" },
+  paid: { label: "Paid for", sub: "Profession", hint: "Where your skills meet a market.", color: "var(--ink-orange)" },
   ikigai: { label: "Ikigai", sub: "All four meet", hint: "Drag here what sits in all four.", color: "var(--primary)" },
 };
 

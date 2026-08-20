@@ -7,8 +7,8 @@ type Task = { id: string; text: string; q: Q | "unsorted" };
 
 const META: Record<Q, { title: string; sub: string; eg: string; tone: string; ring: string }> = {
   do: { title: "Do Now", sub: "Important · Urgent", eg: "Assignments, team meetings, wellbeing", tone: "border-primary/40 bg-primary/5", ring: "ring-primary" },
-  schedule: { title: "Schedule It", sub: "Important · Not Urgent", eg: "Self-reflection, socialising, training", tone: "border-emerald-500/40 bg-emerald-500/5", ring: "ring-emerald-500" },
-  delegate: { title: "Delegate", sub: "Not Important · Urgent", eg: "Chores, replying to emails", tone: "border-amber-500/40 bg-amber-500/5", ring: "ring-amber-500" },
+  schedule: { title: "Schedule It", sub: "Important · Not Urgent", eg: "Self-reflection, socialising, training", tone: "border-ink-purple/40 bg-ink-purple/5", ring: "ring-ink-purple" },
+  delegate: { title: "Delegate", sub: "Not Important · Urgent", eg: "Chores, replying to emails", tone: "border-ink-orange/40 bg-ink-orange/5", ring: "ring-ink-orange" },
   delete: { title: "Delete or Reduce", sub: "Not Important · Not Urgent", eg: "Doomscrolling, over-analysis", tone: "border-muted bg-card", ring: "ring-muted-foreground" },
 };
 

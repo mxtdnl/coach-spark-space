@@ -4,21 +4,21 @@ import { Field, IntroGrid, TextArea } from "./_shared";
 
 const LEGEND = [
   { mark: ".", action: "Pause, breathe, change direction", color: "bg-primary/15 text-primary" },
-  { mark: ",", action: "Brief pause, breathe", color: "bg-emerald-500/15 text-emerald-700 dark:text-emerald-400" },
-  { mark: "—", action: "Swipe your arm", color: "bg-amber-500/15 text-amber-700 dark:text-amber-400" },
-  { mark: "?", action: "Clap your hands", color: "bg-sky-500/15 text-sky-700 dark:text-sky-400" },
-  { mark: "!", action: "Jump in place", color: "bg-pink-500/15 text-pink-700 dark:text-pink-400" },
-  { mark: ":", action: "Snap your fingers", color: "bg-violet-500/15 text-violet-700 dark:text-violet-400" },
+  { mark: ",", action: "Brief pause, breathe", color: "bg-ink-brown-soft text-ink-brown" },
+  { mark: "—", action: "Swipe your arm", color: "bg-ink-orange-soft text-ink-orange" },
+  { mark: "?", action: "Clap your hands", color: "bg-ink-ochre-soft text-ink-ochre" },
+  { mark: "!", action: "Jump in place", color: "bg-ink-red-soft text-ink-red" },
+  { mark: ":", action: "Snap your fingers", color: "bg-ink-purple-soft text-ink-purple" },
 ];
 
 const STYLE: Record<string, string> = {
   ".": "bg-primary/20 text-primary",
-  ",": "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300",
-  "—": "bg-amber-500/20 text-amber-700 dark:text-amber-300",
-  "-": "bg-amber-500/20 text-amber-700 dark:text-amber-300",
-  "?": "bg-sky-500/20 text-sky-700 dark:text-sky-300",
-  "!": "bg-pink-500/20 text-pink-700 dark:text-pink-300",
-  ":": "bg-violet-500/20 text-violet-700 dark:text-violet-300",
+  ",": "bg-ink-brown-soft text-ink-brown",
+  "—": "bg-ink-orange-soft text-ink-orange",
+  "-": "bg-ink-orange-soft text-ink-orange",
+  "?": "bg-ink-ochre-soft text-ink-ochre",
+  "!": "bg-ink-red-soft text-ink-red",
+  ":": "bg-ink-purple-soft text-ink-purple",
 };
 
 export default function WalkAndTalk() {

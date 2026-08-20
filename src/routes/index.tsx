@@ -46,10 +46,10 @@ function LibraryHome() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border bg-card/50 backdrop-blur">
+      <header className="border-b border-border bg-gradient-to-b from-ink-ochre-soft/70 to-card/40 backdrop-blur">
         <div className="mx-auto max-w-5xl px-6 py-8">
           <div className="flex items-start justify-between gap-4">
-            <h1 className="text-2xl font-semibold tracking-tight">
+            <h1 className="text-2xl font-semibold tracking-tight text-ink-red-deep">
               Coaching Exercise Library
             </h1>
             <ThemeToggle />
@@ -67,7 +67,7 @@ function LibraryHome() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search exercises…"
-            className="w-full rounded-md border border-input bg-card px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring"
+            className="w-full rounded-full border border-input bg-card px-4 py-2.5 text-sm shadow-sm outline-none placeholder:text-muted-foreground/80 focus:border-ink-orange focus:ring-2 focus:ring-ring"
           />
 
           <div className="flex flex-wrap gap-2">
@@ -108,15 +108,15 @@ function LibraryHome() {
                 <Link
                   to="/exercise/$slug"
                   params={{ slug: e.slug }}
-                  className="block h-full rounded-xl border border-border bg-card p-6 transition-colors hover:bg-secondary/40"
+                  className="group block h-full rounded-xl border border-border bg-card p-6 shadow-[0_1px_0_oklch(0.4_0.075_58_/_8%)] transition-all hover:-translate-y-0.5 hover:border-ink-orange/50 hover:bg-secondary/50 hover:shadow-[0_10px_24px_-12px_oklch(0.44_0.165_27_/_35%)]"
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
+                    <span className="text-xs uppercase tracking-wider text-ink-orange font-semibold">
                       {e.category}
                     </span>
                     <span className="flex items-center gap-2 text-xs text-muted-foreground">
                       {inProgress.has(e.slug) && (
-                        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
+                        <span className="rounded-full bg-ink-purple-soft px-2 py-0.5 text-[10px] font-medium text-ink-purple">
                           In progress
                         </span>
                       )}
@@ -133,14 +133,17 @@ function LibraryHome() {
                     {e.tags.map((t) => (
                       <span
                         key={t}
-                        className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-muted-foreground"
+                        className="rounded-full bg-ink-brown-soft/60 px-2 py-0.5 text-[10px] text-ink-brown"
                       >
                         {t}
                       </span>
                     ))}
                   </div>
                   <div className="mt-5 text-sm font-medium text-primary">
-                    Start exercise →
+                    Start exercise{" "}
+                    <span className="inline-block transition-transform group-hover:translate-x-1">
+                      →
+                    </span>
                   </div>
                 </Link>
               </li>
@@ -149,7 +152,7 @@ function LibraryHome() {
         )}
 
         {inProgress.size > 0 && (
-          <div className="flex flex-wrap items-center justify-center gap-3 rounded-lg border border-border bg-secondary/40 px-4 py-3 text-xs">
+          <div className="flex flex-wrap items-center justify-center gap-3 rounded-lg border border-ink-brown/25 bg-ink-brown-soft/50 px-4 py-3 text-xs">
             <p className="text-muted-foreground">
               {inProgress.size} exercise{inProgress.size === 1 ? "" : "s"} saved on this
               device. Nothing is uploaded — clearing your browser data removes it.
