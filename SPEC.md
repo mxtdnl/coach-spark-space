@@ -119,7 +119,8 @@ house accents are exposed as their own utilities so colour-coded content stays o
 
 | Token | Utility | Typical use |
 | --- | --- | --- |
-| `--ink-red` / `--ink-red-soft` | `text-ink-red`, `bg-ink-red-soft` | Emphasis, headings, the strongest of a set |
+| `--ink-red` / `--ink-red-soft` | `text-ink-red`, `bg-ink-red-soft` | Emphasis, the strongest of a set |
+| `--ink-red-deep` | `text-ink-red-deep` | Page titles — oxblood in light, lifted in dark |
 | `--ink-brown` / `--ink-brown-soft` | `text-ink-brown`, `bg-ink-brown-soft` | Quiet chrome — tags, saved-work banners |
 | `--ink-orange` / `--ink-orange-soft` | `text-ink-orange`, `bg-ink-orange-soft` | Section eyebrows, focus borders, warnings |
 | `--ink-purple` / `--ink-purple-soft` | `text-ink-purple`, `bg-ink-purple-soft` | Second accent — status pills, contrasting quadrants |

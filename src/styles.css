@@ -68,6 +68,7 @@
    */
   --color-ink-red: var(--ink-red);
   --color-ink-red-soft: var(--ink-red-soft);
+  --color-ink-red-deep: var(--ink-red-deep);
   --color-ink-brown: var(--ink-brown);
   --color-ink-brown-soft: var(--ink-brown-soft);
   --color-ink-orange: var(--ink-orange);
@@ -123,6 +124,8 @@
 
   --ink-red: oklch(0.44 0.165 27);
   --ink-red-soft: oklch(0.88 0.06 30);
+  /* Page titles: near-oxblood, so a heading reads as ink rather than accent. */
+  --ink-red-deep: oklch(0.31 0.115 27);
   --ink-brown: oklch(0.4 0.075 58);
   --ink-brown-soft: oklch(0.88 0.045 68);
   --ink-orange: oklch(0.56 0.155 52);
@@ -173,6 +176,8 @@
 
   --ink-red: oklch(0.68 0.16 30);
   --ink-red-soft: oklch(0.34 0.09 28);
+  /* After dark a title has to lift off the ground, not sink into it. */
+  --ink-red-deep: oklch(0.72 0.145 32);
   --ink-brown: oklch(0.68 0.075 62);
   --ink-brown-soft: oklch(0.33 0.045 58);
   --ink-orange: oklch(0.74 0.145 58);

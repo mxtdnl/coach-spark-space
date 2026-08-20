@@ -71,7 +71,7 @@ function ExercisePage() {
             <Link to="/" className="text-xs text-muted-foreground hover:text-foreground">
               ← Library
             </Link>
-            <h1 className="text-lg font-semibold tracking-tight truncate text-ink-red">{exercise.title}</h1>
+            <h1 className="text-lg font-semibold tracking-tight truncate text-ink-red-deep">{exercise.title}</h1>
           </div>
           <div className="flex items-center gap-3">
             <span className="hidden text-xs text-muted-foreground whitespace-nowrap sm:inline">

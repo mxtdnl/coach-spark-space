@@ -49,7 +49,7 @@ function LibraryHome() {
       <header className="border-b border-border bg-gradient-to-b from-ink-ochre-soft/70 to-card/40 backdrop-blur">
         <div className="mx-auto max-w-5xl px-6 py-8">
           <div className="flex items-start justify-between gap-4">
-            <h1 className="text-2xl font-semibold tracking-tight text-ink-red">
+            <h1 className="text-2xl font-semibold tracking-tight text-ink-red-deep">
               Coaching Exercise Library
             </h1>
             <ThemeToggle />
