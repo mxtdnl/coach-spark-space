@@ -43,8 +43,8 @@ export default function SmartGoals() {
       <div className="rounded-xl border border-border bg-card p-6 space-y-4">
         <h3 className="text-sm font-semibold">Reflection</h3>
         <div>
-          <label className="text-sm">How confident do you feel about this goal? <strong>{confidence}%</strong></label>
-          <input type="range" min={0} max={100} value={confidence} onChange={(e) => setConfidence(+e.target.value)} className="w-full mt-2" />
+          <label className="text-sm" htmlFor="smart-goals-confidence">How confident do you feel about this goal? <strong>{confidence}%</strong></label>
+          <input id="smart-goals-confidence" type="range" min={0} max={100} value={confidence} onChange={(e) => setConfidence(+e.target.value)} className="w-full mt-2" />
         </div>
         <Field label="What could increase your confidence?" hint="Tweak the goal, reach out for support, break it down...">
           <TextArea rows={3} value={boost} onChange={(e) => setBoost(e.target.value)} />
