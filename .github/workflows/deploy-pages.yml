@@ -31,10 +31,17 @@ jobs:
       - name: Install dependencies
         run: npm install --registry=https://registry.npmjs.org --no-audit --no-fund
 
+      # The base path must match the URL the site is served from. Derive it from
+      # the repository's *current* name at run time rather than from the event
+      # payload, which still carries the old name after a rename. Set the
+      # PAGES_BASE repository variable to override (e.g. "/" for a custom domain).
       - name: Build static site
+        run: |
+          PAGES_BASE="${OVERRIDE:-/${GITHUB_REPOSITORY##*/}/}"
+          echo "Building with base path: $PAGES_BASE"
+          PAGES_BASE="$PAGES_BASE" npx vite build --config vite.config.pages.ts
         env:
-          PAGES_BASE: /${{ github.event.repository.name }}/
-        run: npx vite build --config vite.config.pages.ts
+          OVERRIDE: ${{ vars.PAGES_BASE }}
 
       - name: Add Pages fallbacks
         run: |
